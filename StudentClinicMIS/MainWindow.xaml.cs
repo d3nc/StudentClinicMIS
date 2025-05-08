@@ -1,23 +1,29 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using StudentClinicMIS.Models; // сюда scaffold добавил модели
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
 
-namespace StudentClinicMIS;
-
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class MainWindow : Window
+namespace StudentClinicMIS
 {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
+        private readonly PolyclinicContext _context;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            // получаем контекст из DI (если используешь Host), или напрямую
+            _context = new PolyclinicContext(); // если контекст с дефолтным конструктором
+
+            LoadPatients();
+        }
+
+        private async void LoadPatients()
+        {
+            var patients = await _context.Patients.ToListAsync();
+            PatientsGrid.ItemsSource = patients;
+        }
     }
 }
