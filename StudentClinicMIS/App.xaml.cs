@@ -7,6 +7,8 @@ using StudentClinicMIS;
 using Microsoft.EntityFrameworkCore;
 using System;
 using StudentClinicMIS.Models;
+using StudentClinicMIS.Data.Interfaces;
+using StudentClinicMIS.Data.Repositories;
 
 namespace StudentClinicMIS
 {
@@ -26,9 +28,11 @@ namespace StudentClinicMIS
                 {
                     var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
 
-                    // Здесь используем тот DbContext, который сгенерировался — скорее всего PolyclinicContext
                     services.AddDbContext<PolyclinicContext>(options =>
                         options.UseNpgsql(connectionString));
+
+                    services.AddScoped<IPatientRepository, PatientRepository>();
+                    services.AddTransient<MainWindow>();
                 })
                 .Build();
         }
@@ -38,9 +42,11 @@ namespace StudentClinicMIS
             await AppHost.StartAsync();
             base.OnStartup(e);
 
-            var mainWindow = new MainWindow();
+            var scope = AppHost.Services.CreateScope();
+            var mainWindow = scope.ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
+
 
         protected override async void OnExit(ExitEventArgs e)
         {
