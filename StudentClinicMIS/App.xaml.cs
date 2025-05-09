@@ -33,6 +33,8 @@ namespace StudentClinicMIS
 
                     services.AddScoped<IPatientRepository, PatientRepository>();
                     services.AddTransient<MainWindow>();
+                    services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
                 })
                 .Build();
         }

@@ -1,0 +1,31 @@
+<Window x:Class="StudentClinicMIS.Views.PatientAppointmentsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:StudentClinicMIS.Converters"
+        Title="История посещений пациента" Height="450" Width="1000">
+	<Window.Resources>
+		<local:EmployeeFullNameConverter x:Key="EmployeeFullNameConverter"/>
+	</Window.Resources>
+	<Grid Margin="10">
+		<DataGrid x:Name="AppointmentsDataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  SelectionMode="Single"
+                  GridLinesVisibility="All">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Дата" Binding="{Binding AppointmentDate}" Width="100"/>
+				<DataGridTextColumn Header="Время начала" Binding="{Binding StartTime}" Width="100"/>
+				<DataGridTextColumn Header="Время окончания" Binding="{Binding EndTime}" Width="100"/>
+				<DataGridTextColumn Header="ФИО врача"
+                                    Binding="{Binding Doctor.Employee, Converter={StaticResource EmployeeFullNameConverter}}"
+                                    Width="200"/>
+				<DataGridTextColumn Header="Специализация" Binding="{Binding Doctor.Specialization.Name}" Width="150"/>
+				<DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="100"/>
+				<DataGridTextColumn Header="Цель" Binding="{Binding Purpose}" Width="200"/>
+				<DataGridTextColumn Header="Примечания" Binding="{Binding Notes}" Width="200"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</Window>

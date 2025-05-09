@@ -1,54 +1,59 @@
-﻿using StudentClinicMIS.Data.Interfaces;
+﻿using StudentClinicMIS.Data;
+using StudentClinicMIS.Data.Interfaces;
+using StudentClinicMIS.Data.Repositories;
 using StudentClinicMIS.Models;
 using StudentClinicMIS.Views;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace StudentClinicMIS
 {
     public partial class MainWindow : Window
     {
         private readonly IPatientRepository _patientRepository;
-        private List<Patient> _allPatients = new();
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly PolyclinicContext _context = new PolyclinicContext();
 
-        public MainWindow(IPatientRepository patientRepository)
+        public MainWindow()
         {
             InitializeComponent();
-            _patientRepository = patientRepository;
-            Loaded += async (_, __) => await LoadPatientsAsync();
+
+            _patientRepository = App.AppHost.Services.GetService(typeof(IPatientRepository)) as IPatientRepository;
+            _appointmentRepository = App.AppHost.Services.GetService(typeof(IAppointmentRepository)) as IAppointmentRepository;
+
+            _ = LoadPatientsAsync();
         }
 
         private async Task LoadPatientsAsync()
         {
-            _allPatients = await _patientRepository.GetAllAsync();
-            PatientsDataGrid.ItemsSource = _allPatients;
+            var patients = await _patientRepository.GetAllAsync();
+            PatientsDataGrid.ItemsSource = patients;
         }
 
-        private async void AddPatientButton_Click(object sender, RoutedEventArgs e)
+        private void AddPatientButton_Click(object sender, RoutedEventArgs e)
         {
             var addWindow = new AddPatientWindow(_patientRepository);
             if (addWindow.ShowDialog() == true)
             {
-                await LoadPatientsAsync();
+                _ = LoadPatientsAsync();
             }
         }
 
-        private async void EditPatientButton_Click(object sender, RoutedEventArgs e)
+        private void EditPatientButton_Click(object sender, RoutedEventArgs e)
         {
             if (PatientsDataGrid.SelectedItem is Patient selectedPatient)
             {
                 var editWindow = new EditPatientWindow(selectedPatient, _patientRepository);
                 if (editWindow.ShowDialog() == true)
                 {
-                    await LoadPatientsAsync();
+                    _ = LoadPatientsAsync();
                 }
             }
             else
             {
-                MessageBox.Show("Выберите пациента для редактирования.");
+                MessageBox.Show("Пожалуйста, выберите пациента для редактирования.");
             }
         }
 
@@ -56,7 +61,7 @@ namespace StudentClinicMIS
         {
             if (PatientsDataGrid.SelectedItem is Patient selectedPatient)
             {
-                var result = MessageBox.Show("Вы уверены, что хотите удалить пациента?", "Подтверждение", MessageBoxButton.YesNo);
+                var result = MessageBox.Show("Вы уверены, что хотите удалить этого пациента?", "Подтверждение", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     await _patientRepository.DeleteAsync(selectedPatient.PatientId);
@@ -65,22 +70,37 @@ namespace StudentClinicMIS
             }
             else
             {
-                MessageBox.Show("Выберите пациента для удаления.");
+                MessageBox.Show("Пожалуйста, выберите пациента для удаления.");
             }
         }
 
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            string query = SearchBox.Text.ToLower();
+            var searchText = SearchTextBox?.Text?.Trim()?.ToLower() ?? "";
+            var allPatients = await _patientRepository.GetAllAsync();
 
-            var filtered = _allPatients.Where(p =>
-                (p.FirstName?.ToLower().Contains(query) ?? false) ||
-                (p.LastName?.ToLower().Contains(query) ?? false) ||
-                (p.MiddleName?.ToLower().Contains(query) ?? false) ||
-                (p.Phone?.ToLower().Contains(query) ?? false)
+            var filtered = allPatients.Where(p =>
+                p.FirstName.ToLower().Contains(searchText) ||
+                p.LastName.ToLower().Contains(searchText) ||
+                p.MiddleName.ToLower().Contains(searchText) ||
+                p.Phone.ToLower().Contains(searchText)
             ).ToList();
 
             PatientsDataGrid.ItemsSource = filtered;
+        }
+
+        private async void ViewAppointmentsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (PatientsDataGrid.SelectedItem is Patient selectedPatient)
+            {
+                var appointments = await _appointmentRepository.GetByPatientIdAsync(selectedPatient.PatientId);
+                var appointmentsWindow = new PatientAppointmentsWindow(appointments);
+                appointmentsWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Выберите пациента для просмотра истории посещений.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }
