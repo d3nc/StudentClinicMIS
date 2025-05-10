@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Windows;
-using System.IO;
-using StudentClinicMIS;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Windows;
 using StudentClinicMIS.Models;
 using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Data.Repositories;
+using StudentClinicMIS.Data.Services;
+using StudentClinicMIS.Views;
 
 namespace StudentClinicMIS
 {
@@ -31,10 +31,17 @@ namespace StudentClinicMIS
                     services.AddDbContext<PolyclinicContext>(options =>
                         options.UseNpgsql(connectionString));
 
+                    // Репозитории
                     services.AddScoped<IPatientRepository, PatientRepository>();
-                    services.AddTransient<MainWindow>();
                     services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
+                    // Авторизация
+                    services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+
+                    // Окна по ролям
+                    services.AddTransient<AdminMainWindow>();
+                    services.AddTransient<DoctorMainWindow>();
+                    services.AddTransient<RegistrarMainWindow>();
                 })
                 .Build();
         }
@@ -44,11 +51,9 @@ namespace StudentClinicMIS
             await AppHost.StartAsync();
             base.OnStartup(e);
 
-            var scope = AppHost.Services.CreateScope();
-            var mainWindow = scope.ServiceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
         }
-
 
         protected override async void OnExit(ExitEventArgs e)
         {

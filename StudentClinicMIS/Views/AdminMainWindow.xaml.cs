@@ -8,15 +8,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace StudentClinicMIS
+namespace StudentClinicMIS.Views
 {
-    public partial class MainWindow : Window
+    public partial class AdminMainWindow : Window
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly PolyclinicContext _context = new PolyclinicContext();
 
-        public MainWindow()
+        public AdminMainWindow()
         {
             InitializeComponent();
 

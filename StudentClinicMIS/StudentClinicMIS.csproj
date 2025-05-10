@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="ViewModels\**" />
+    <Page Remove="ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
@@ -21,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
