@@ -9,7 +9,9 @@ using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Data.Repositories;
 using StudentClinicMIS.Data.Services;
 using StudentClinicMIS.Views;
-
+using StudentClinicMIS.Views.Registrar;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 namespace StudentClinicMIS
 {
     public partial class App : Application
@@ -18,6 +20,8 @@ namespace StudentClinicMIS
 
         public App()
         {
+
+            // 2. Затем настраиваем хост
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, config) =>
                 {
@@ -31,14 +35,13 @@ namespace StudentClinicMIS
                     services.AddDbContext<PolyclinicContext>(options =>
                         options.UseNpgsql(connectionString));
 
-                    // Репозитории
+                    // Репозитории и сервисы
                     services.AddScoped<IPatientRepository, PatientRepository>();
                     services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-
-                    // Авторизация
                     services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 
-                    // Окна по ролям
+                    // Окна с внедрением зависимостей
+                    services.AddTransient<LoginWindow>();
                     services.AddTransient<AdminMainWindow>();
                     services.AddTransient<DoctorMainWindow>();
                     services.AddTransient<RegistrarMainWindow>();
@@ -48,16 +51,29 @@ namespace StudentClinicMIS
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await AppHost.StartAsync();
-            base.OnStartup(e);
+            try
+            {
+                await AppHost.StartAsync();
 
-            var loginWindow = new LoginWindow();
-            loginWindow.Show();
+                // Создаем LoginWindow через DI-контейнер
+                var loginWindow = AppHost.Services.GetRequiredService<LoginWindow>();
+                loginWindow.Show();
+
+                base.OnStartup(e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fatal error: {ex.Message}", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown();
+            }
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
-            await AppHost.StopAsync();
+            using (AppHost)
+            {
+                await AppHost.StopAsync();
+            }
             base.OnExit(e);
         }
     }

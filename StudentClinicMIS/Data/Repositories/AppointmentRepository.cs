@@ -26,5 +26,18 @@ namespace StudentClinicMIS.Data.Repositories
                     .ThenInclude(d => d.Specialization)
                 .ToListAsync();
         }
+        public async Task AddAsync(Appointment appointment)
+        {
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Doctor>> GetAllDoctorsAsync()
+        {
+            return await _context.Doctors
+                .Include(d => d.Employee)
+                .ToListAsync();
+        }
+
     }
 }
