@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StudentClinicMIS.Models;
 
-public partial class DoctorSchedule1
+public partial class DoctorScheduleEntity
 {
     public int ScheduleId { get; set; }
 

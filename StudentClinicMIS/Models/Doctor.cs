@@ -19,7 +19,7 @@ public partial class Doctor
 
     public virtual ICollection<Department> Departments { get; set; } = new List<Department>();
 
-    public virtual ICollection<DoctorSchedule1> DoctorSchedule1s { get; set; } = new List<DoctorSchedule1>();
+    public virtual ICollection<DoctorScheduleEntity> DoctorSchedule1s { get; set; } = new List<DoctorScheduleEntity>();
 
     public virtual Employee Employee { get; set; } = null!;
 

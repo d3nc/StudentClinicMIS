@@ -25,7 +25,7 @@ public partial class PolyclinicContext : DbContext
 
     public virtual DbSet<DoctorSchedule> DoctorSchedules { get; set; }
 
-    public virtual DbSet<DoctorSchedule1> DoctorSchedules1 { get; set; }
+    public virtual DbSet<DoctorScheduleEntity> DoctorSchedules1 { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
 
@@ -189,7 +189,7 @@ public partial class PolyclinicContext : DbContext
             entity.Property(e => e.StartTime).HasColumnName("start_time");
         });
 
-        modelBuilder.Entity<DoctorSchedule1>(entity =>
+        modelBuilder.Entity<DoctorScheduleEntity>(entity =>
         {
             entity.HasKey(e => e.ScheduleId).HasName("doctor_schedules_pkey");
 

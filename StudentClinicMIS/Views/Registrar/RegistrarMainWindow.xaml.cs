@@ -1,5 +1,7 @@
-﻿using StudentClinicMIS.Data.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
+using StudentClinicMIS.Views.Registrar;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -192,7 +194,12 @@ namespace StudentClinicMIS.Views.Registrar
             {
                 if (PatientsDataGrid.SelectedItem is Patient selectedPatient)
                 {
-                    var appointmentWindow = new AddAppointmentWindow(selectedPatient.PatientId, _appointmentRepository);
+                    var appointmentWindow = new ScheduleAppointmentWindow(
+                        selectedPatient.PatientId,
+                        _appointmentRepository,
+                        App.AppHost.Services.GetRequiredService<IDoctorRepository>(),
+                        App.AppHost.Services.GetRequiredService<PolyclinicContext>());
+
                     if (appointmentWindow.ShowDialog() == true)
                     {
                         ShowInfoMessage("Приём успешно добавлен.");

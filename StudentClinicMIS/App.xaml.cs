@@ -39,6 +39,7 @@ namespace StudentClinicMIS
                     services.AddScoped<IPatientRepository, PatientRepository>();
                     services.AddScoped<IAppointmentRepository, AppointmentRepository>();
                     services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+                    services.AddScoped<IDoctorRepository, DoctorRepository>();
 
                     // Окна с внедрением зависимостей
                     services.AddTransient<LoginWindow>();
