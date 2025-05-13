@@ -1,0 +1,58 @@
+<UserControl x:Class="YourNamespace.AppointmentPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:YourNamespace"
+             Height="Auto" Width="Auto">
+
+	<Grid Margin="16">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<TextBlock Text="Создание записи на приём"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,12"/>
+
+		<GroupBox Grid.Row="1" Header="Параметры записи" Margin="0,0,0,12">
+			<StackPanel Orientation="Horizontal">
+				<ComboBox x:Name="PatientComboBox" Width="250"
+                          materialDesign:HintAssist.Hint="Пациент"
+                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                          Margin="0,0,12,0"
+                          DisplayMemberPath="FullName"
+                          SelectedValuePath="PatientId"/>
+
+				<ComboBox x:Name="DepartmentComboBox" Width="250"
+                          materialDesign:HintAssist.Hint="Отделение"
+                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                          Margin="0,0,12,0"/>
+
+				<ComboBox x:Name="DoctorComboBox" Width="250"
+                          materialDesign:HintAssist.Hint="Врач"
+                          Style="{StaticResource MaterialDesignFilledComboBox}"
+                          Margin="0,0,12,0"/>
+
+				<DatePicker x:Name="DatePicker" Width="200"
+                            materialDesign:HintAssist.Hint="Дата приёма"
+                            Style="{StaticResource MaterialDesignDatePicker}"/>
+			</StackPanel>
+		</GroupBox>
+
+		<Button Grid.Row="2" Content="Сохранить запись"
+                HorizontalAlignment="Left"
+                Width="200"
+                Margin="0,0,0,0"
+                Style="{StaticResource MaterialDesignRaisedButton}"
+                Click="SaveAppointment_Click"/>
+
+		<materialDesign:Snackbar x:Name="NotificationSnackbar"
+                                 Grid.Row="2"
+                                 HorizontalAlignment="Right"
+                                 Margin="0,0,12,0"
+                                 MessageQueue="{materialDesign:MessageQueue}"/>
+	</Grid>
+</UserControl>

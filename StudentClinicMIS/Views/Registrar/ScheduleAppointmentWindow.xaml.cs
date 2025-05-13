@@ -117,11 +117,22 @@ namespace StudentClinicMIS.Views
                 TimeSlotsListBox.SelectedItem is not TimeSlotDisplay selectedSlot ||
                 selectedSlot.IsOccupied)
             {
-                MessageBox.Show("Пожалуйста, выберите доступный слот для приёма.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Пожалуйста, выберите доступный слот для приёма.",
+                                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             int doctorId = (int)DoctorComboBox.SelectedValue;
+
+            var alreadyExists = _appointments.Any(a => a.StartTime == selectedSlot.Time);
+
+            if (alreadyExists)
+            {
+                MessageBox.Show("Выбранный слот уже занят. Обновите список или выберите другое время.",
+                                "Слот занят", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var appointment = new Appointment
             {
                 PatientId = _patientId,

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using StudentClinicMIS.Data.Interfaces;
+﻿using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
 using StudentClinicMIS.Views.Registrar;
 using System;
@@ -18,6 +17,8 @@ namespace StudentClinicMIS.Views.Registrar
         private readonly IAppointmentRepository _appointmentRepository;
         private ObservableCollection<Patient> _patients;
 
+        public Patient? SelectedPatient { get; private set; }
+
         public RegistrarMainWindow(IPatientRepository patientRepository, IAppointmentRepository appointmentRepository)
         {
             InitializeComponent();
@@ -27,6 +28,9 @@ namespace StudentClinicMIS.Views.Registrar
 
             PatientsDataGrid.ItemsSource = _patients;
             Loaded += async (s, e) => await LoadPatientsAsync();
+            MainTabControl.SelectionChanged += MainTabControl_SelectionChanged;
+            PatientsDataGrid.SelectionChanged += PatientsDataGrid_SelectionChanged;
+            PatientsDataGrid.MouseDoubleClick += PatientsDataGrid_MouseDoubleClick;
         }
 
         private async Task LoadPatientsAsync()
@@ -105,9 +109,30 @@ namespace StudentClinicMIS.Views.Registrar
             }
         }
 
+        private void PatientsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedPatient = PatientsDataGrid.SelectedItem as Patient;
+        }
+
         private void PatientsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            EditPatientButton_Click(sender, null);
+            if (PatientsDataGrid.SelectedItem is Patient patient)
+            {
+                SelectedPatient = patient;
+                foreach (TabItem tab in MainTabControl.Items)
+                {
+                    if (tab.Header?.ToString() == "Запись на приём")
+                    {
+                        MainTabControl.SelectedItem = tab;
+                        if (tab.Content is AvailableDoctorsPanel panel)
+                        {
+                            panel.CurrentPatient = SelectedPatient;
+                            panel.UpdatePatientInfo();
+                        }
+                        break;
+                    }
+                }
+            }
         }
 
         private async void EditPatientButton_Click(object sender, RoutedEventArgs e)
@@ -188,32 +213,18 @@ namespace StudentClinicMIS.Views.Registrar
             }
         }
 
-        private async void AddAppointmentButton_Click(object sender, RoutedEventArgs e)
+        private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (e.Source is TabControl tabControl && tabControl.SelectedItem is TabItem tabItem)
             {
-                if (PatientsDataGrid.SelectedItem is Patient selectedPatient)
+                if (tabItem.Header?.ToString() == "Запись на приём")
                 {
-                    var appointmentWindow = new ScheduleAppointmentWindow(
-                        selectedPatient.PatientId,
-                        _appointmentRepository,
-                        App.AppHost.Services.GetRequiredService<IDoctorRepository>(),
-                        App.AppHost.Services.GetRequiredService<PolyclinicContext>());
-
-                    if (appointmentWindow.ShowDialog() == true)
+                    if (tabItem.Content is AvailableDoctorsPanel panel)
                     {
-                        ShowInfoMessage("Приём успешно добавлен.");
+                        panel.CurrentPatient = SelectedPatient;
+                        panel.UpdatePatientInfo();
                     }
                 }
-                else
-                {
-                    ShowInfoMessage("Выберите пациента для записи на приём.");
-                }
-            }
-            catch (Exception ex)
-            {
-                StatusText.Text = "Ошибка записи на приём";
-                ShowErrorMessage($"Ошибка записи на приём: {ex.Message}");
             }
         }
 

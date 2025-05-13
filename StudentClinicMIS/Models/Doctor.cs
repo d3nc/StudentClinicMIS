@@ -26,4 +26,5 @@ public partial class Doctor
     public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
 
     public virtual Specialization? Specialization { get; set; }
+    public string FullName => $"{Employee?.LastName} {Employee?.FirstName} {Employee?.MiddleName}";
 }

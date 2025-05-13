@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
 using System.Collections.Generic;
@@ -9,19 +10,35 @@ namespace StudentClinicMIS.Data.Repositories
 {
     public class DoctorRepository : IDoctorRepository
     {
-        private readonly PolyclinicContext _context;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public DoctorRepository(PolyclinicContext context)
+        public DoctorRepository(IServiceScopeFactory scopeFactory)
         {
-            _context = context;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task<List<Doctor>> GetByDepartmentIdAsync(int departmentId)
         {
-            return await _context.Doctors
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<PolyclinicContext>();
+
+            return await context.Doctors
                 .Include(d => d.Employee)
+                .Include(d => d.Specialization) 
                 .Where(d => d.Employee.DepartmentId == departmentId)
                 .ToListAsync();
+        }
+
+        public async Task<DoctorScheduleEntity?> GetScheduleForDoctorAsync(int doctorId, DayOfWeek dayOfWeek)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<PolyclinicContext>();
+
+            return await context.DoctorSchedules1
+                .Include(s => s.Room)
+                .FirstOrDefaultAsync(s =>
+                    s.DoctorId == doctorId &&
+                    s.DayOfWeek.ToLower() == dayOfWeek.ToString().ToLower());
         }
     }
 }
