@@ -5,54 +5,91 @@
              xmlns:local="clr-namespace:YourNamespace"
              Height="Auto" Width="Auto">
 
-	<Grid Margin="16">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
+    <Border Background="{DynamicResource MaterialDesignPaper}"
+            CornerRadius="4"
+            Padding="16"
+            Margin="8"
+            Effect="{StaticResource MaterialDesignShadowDepth1}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-		<TextBlock Text="Создание записи на приём"
-                   FontSize="24"
-                   FontWeight="Bold"
-                   Margin="0,0,0,12"/>
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+                <materialDesign:PackIcon Kind="CalendarPlus" 
+                                        Width="32" 
+                                        Height="32"
+                                        Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                        Margin="0,0,12,0"/>
+                <TextBlock Text="Создание записи на приём"
+                           FontSize="20"
+                           FontWeight="Medium"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource MaterialDesignBody}"/>
+            </StackPanel>
 
-		<GroupBox Grid.Row="1" Header="Параметры записи" Margin="0,0,0,12">
-			<StackPanel Orientation="Horizontal">
-				<ComboBox x:Name="PatientComboBox" Width="250"
-                          materialDesign:HintAssist.Hint="Пациент"
-                          Style="{StaticResource MaterialDesignFilledComboBox}"
-                          Margin="0,0,12,0"
-                          DisplayMemberPath="FullName"
-                          SelectedValuePath="PatientId"/>
+            <!-- Appointment Parameters -->
+            <GroupBox Grid.Row="1" 
+                      Header="Параметры записи" 
+                      Margin="0,0,0,16"
+                      Style="{StaticResource MaterialDesignCardGroupBox}">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-				<ComboBox x:Name="DepartmentComboBox" Width="250"
-                          materialDesign:HintAssist.Hint="Отделение"
-                          Style="{StaticResource MaterialDesignFilledComboBox}"
-                          Margin="0,0,12,0"/>
+                    <ComboBox x:Name="PatientComboBox" 
+                              Grid.Column="0"
+                              materialDesign:HintAssist.Hint="Пациент"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              Margin="8"
+                              DisplayMemberPath="FullName"
+                              SelectedValuePath="PatientId"/>
 
-				<ComboBox x:Name="DoctorComboBox" Width="250"
-                          materialDesign:HintAssist.Hint="Врач"
-                          Style="{StaticResource MaterialDesignFilledComboBox}"
-                          Margin="0,0,12,0"/>
+                    <ComboBox x:Name="DepartmentComboBox" 
+                              Grid.Column="1"
+                              materialDesign:HintAssist.Hint="Отделение"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              Margin="8"/>
 
-				<DatePicker x:Name="DatePicker" Width="200"
-                            materialDesign:HintAssist.Hint="Дата приёма"
-                            Style="{StaticResource MaterialDesignDatePicker}"/>
-			</StackPanel>
-		</GroupBox>
+                    <ComboBox x:Name="DoctorComboBox" 
+                              Grid.Column="2"
+                              materialDesign:HintAssist.Hint="Врач"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              Margin="8"/>
 
-		<Button Grid.Row="2" Content="Сохранить запись"
-                HorizontalAlignment="Left"
-                Width="200"
-                Margin="0,0,0,0"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Click="SaveAppointment_Click"/>
+                    <DatePicker x:Name="DatePicker" 
+                                Grid.Column="3"
+                                materialDesign:HintAssist.Hint="Дата приёма"
+                                Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                                Margin="8"/>
+                </Grid>
+            </GroupBox>
 
-		<materialDesign:Snackbar x:Name="NotificationSnackbar"
-                                 Grid.Row="2"
-                                 HorizontalAlignment="Right"
-                                 Margin="0,0,12,0"
-                                 MessageQueue="{materialDesign:MessageQueue}"/>
-	</Grid>
+            <!-- Action Buttons -->
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Сохранить запись"
+                        Width="180"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        materialDesign:ButtonAssist.CornerRadius="2"
+                        Click="SaveAppointment_Click"/>
+            </StackPanel>
+
+            <!-- Notification -->
+            <materialDesign:Snackbar x:Name="NotificationSnackbar"
+                                   Grid.Row="2"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+                                   Margin="0,0,0,12"/>
+        </Grid>
+    </Border>
 </UserControl>

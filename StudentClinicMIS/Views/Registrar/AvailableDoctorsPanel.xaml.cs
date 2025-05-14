@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
-using StudentClinicMIS.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace StudentClinicMIS.Views.Registrar
 {
@@ -77,10 +78,6 @@ namespace StudentClinicMIS.Views.Registrar
         {
             if (sender is Button button && button.DataContext is TimeOnly timeSlot)
             {
-                // Here you can handle the slot selection
-                // For example, you might want to select this slot in the SlotsListBox
-                // or directly proceed with appointment creation
-
                 MessageBox.Show($"Выбран слот: {timeSlot:hh\\:mm}", "Выбор времени",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -104,7 +101,10 @@ namespace StudentClinicMIS.Views.Registrar
             var schedule = await doctorRepository.GetScheduleForDoctorAsync(doctor.DoctorId, dateOnly.DayOfWeek);
 
             if (schedule is null)
+            {
+                MessageBox.Show("У врача нет расписания на выбранный день.", "Нет расписания", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
 
             var start = schedule.StartTime;
             var end = schedule.EndTime;
@@ -121,6 +121,25 @@ namespace StudentClinicMIS.Views.Registrar
             }
 
             SlotsListBox.ItemsSource = _slots;
+        }
+        private void AppointmentDatePicker_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is not DatePicker datePicker)
+                return;
+
+            if (datePicker.Template.FindName("PART_TextBox", datePicker) is DatePickerTextBox textBox)
+            {
+                textBox.IsReadOnly = true;
+                textBox.Cursor = Cursors.Hand;
+                textBox.PreviewMouseLeftButtonDown -= DatePickerTextBox_PreviewMouseLeftButtonDown;
+                textBox.PreviewMouseLeftButtonDown += DatePickerTextBox_PreviewMouseLeftButtonDown;
+            }
+        }
+
+        private void DatePickerTextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            AppointmentDatePicker.IsDropDownOpen = true;
+            e.Handled = true;
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -165,7 +184,7 @@ namespace StudentClinicMIS.Views.Registrar
 
         public override string ToString()
         {
-            return $"{StartTime:hh:mm} - {(IsOccupied ? "Занято" : "Свободно")}";
+            return $"{StartTime:hh\\:mm} - {(IsOccupied ? "Занято" : "Свободно")}";
         }
     }
 }
