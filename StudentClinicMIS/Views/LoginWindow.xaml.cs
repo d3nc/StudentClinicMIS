@@ -2,9 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
+using StudentClinicMIS.Views.Registrar;
 using System;
 using System.Windows;
-using StudentClinicMIS.Views.Registrar;
+using System.Windows.Input;
 
 namespace StudentClinicMIS.Views
 {
@@ -17,6 +18,8 @@ namespace StudentClinicMIS.Views
         public LoginWindow()
         {
             InitializeComponent();
+
+            // Создание области зависимостей
             _scope = App.AppHost.Services.CreateScope();
             _context = _scope.ServiceProvider.GetRequiredService<PolyclinicContext>();
             _passwordHasher = _scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
@@ -47,11 +50,11 @@ namespace StudentClinicMIS.Views
                 user.LastLogin = DateTime.Now;
                 await _context.SaveChangesAsync();
 
-                Window mainWindow = user.Role.ToLower() switch
+                Window? mainWindow = user.Role?.ToLower() switch
                 {
-                    "admin" => App.AppHost.Services.GetRequiredService<AdminMainWindow>(),
-                    "doctor" => App.AppHost.Services.GetRequiredService<DoctorMainWindow>(),
-                    "receptionist" => App.AppHost.Services.GetRequiredService<RegistrarMainWindow>(),
+                    "admin" => App.AppHost.Services.GetService<AdminMainWindow>(),
+                    "doctor" => App.AppHost.Services.GetService<DoctorMainWindow>(),
+                    "receptionist" => App.AppHost.Services.GetService<RegistrarMainWindow>(),
                     _ => null
                 };
 
@@ -62,7 +65,7 @@ namespace StudentClinicMIS.Views
                 }
 
                 mainWindow.Show();
-                Hide(); // Скрываем вместо закрытия
+                Close(); // Закрытие окна входа
             }
             catch (Exception ex)
             {
@@ -70,6 +73,17 @@ namespace StudentClinicMIS.Views
             }
         }
 
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
         protected override void OnClosed(EventArgs e)
         {
             _scope?.Dispose();
