@@ -17,12 +17,17 @@ namespace StudentClinicMIS.Data.Repositories
 
         public async Task<List<Patient>> GetAllAsync()
         {
-            return await _context.Patients.ToListAsync();
+            return await _context.Patients
+                .Include(p => p.Gender)
+                .OrderBy(p => p.LastName)
+                .ToListAsync();
         }
 
         public async Task<Patient?> GetByIdAsync(int id)
         {
-            return await _context.Patients.FindAsync(id);
+            return await _context.Patients
+                .Include(p => p.Gender)
+                .FirstOrDefaultAsync(p => p.PatientId == id);
         }
 
         public async Task AddAsync(Patient patient)

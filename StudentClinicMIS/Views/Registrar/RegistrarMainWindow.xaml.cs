@@ -118,6 +118,7 @@ namespace StudentClinicMIS.Views.Registrar
         {
             if (PatientsDataGrid.SelectedItem is Patient patient)
             {
+                e.Handled = true;
                 SelectedPatient = patient;
                 foreach (TabItem tab in MainTabControl.Items)
                 {

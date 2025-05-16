@@ -113,10 +113,9 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="120" />
-                            <DataGridTextColumn Header="Пол" Binding="{Binding Gender}" Width="80" />
+                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding FormattedBirthDate}" Width="120" />
+                            <DataGridTextColumn Header="Пол" Binding="{Binding GenderName}" Width="80" />
                             <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="150" />
-                            <DataGridTextColumn Header="Доп. телефон" Binding="{Binding AdditionalPhone}" Width="150" />
                         </DataGrid.Columns>
                     </DataGrid>
 

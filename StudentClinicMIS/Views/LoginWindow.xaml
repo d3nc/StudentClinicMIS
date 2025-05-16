@@ -10,7 +10,8 @@
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         Background="Transparent"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        KeyDown="Window_KeyDown">
 
     <Border Background="{DynamicResource MaterialDesignPaper}"
             CornerRadius="14"
@@ -29,8 +30,8 @@
             <!-- Кнопка закрытия -->
             <Button Content="✕"
                     Grid.Row="0"
-                    Width="32"
-                    Height="32"
+                    Width="35"
+                    Height="35"
                     Padding="0"
                     FontSize="20"
                     HorizontalAlignment="Right"
@@ -56,14 +57,16 @@
                          FontSize="18"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          materialDesign:HintAssist.Hint="Имя пользователя"
-                         Margin="0,0,0,20" />
+                         Margin="0,0,0,20"
+                         KeyDown="Input_KeyDown"/>
 
                 <PasswordBox x:Name="PasswordBox"
                              Height="52"
                              FontSize="18"
                              Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
                              materialDesign:HintAssist.Hint="Пароль"
-                             Margin="0,0,0,28"/>
+                             Margin="0,0,0,28"
+                             KeyDown="Input_KeyDown"/>
             </StackPanel>
 
             <!-- Кнопка входа -->
