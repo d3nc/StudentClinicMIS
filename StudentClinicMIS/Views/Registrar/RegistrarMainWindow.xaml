@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:StudentClinicMIS.Views.Registrar"
-        Title="Регистратор"
-        Height="750"
-        Width="1200"
+        Title="Регистратура" 
+        Height="750" 
+        Width="1300"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource MaterialDesignPaper}">
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="Segoe UI">
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
@@ -15,44 +16,57 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Панель вкладок -->
+        <!-- Вкладки -->
         <TabControl x:Name="MainTabControl"
-                    Grid.Row="0"
+                    Grid.Row="1"
                     Style="{DynamicResource MaterialDesignNavigationTabControl}"
                     materialDesign:ColorZoneAssist.Mode="PrimaryMid">
+
+            <!-- Вкладка Пациенты -->
             <TabItem Header="Пациенты" IsSelected="True">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Панель управления -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+                    <!-- Панель управления с выравниванием по левому краю -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <!-- Поиск -->
                         <TextBox x:Name="SearchTextBox"
-                                 Width="300"
+                                 Width="200"
                                  Margin="0,0,8,0"
                                  materialDesign:HintAssist.Hint="Поиск пациента"
                                  materialDesign:TextFieldAssist.HasClearButton="True"
                                  Style="{DynamicResource MaterialDesignOutlinedTextBox}"
-                                 TextChanged="SearchTextBox_TextChanged" />
+                                 TextChanged="SearchTextBox_TextChanged"/>
 
-                        <Button Click="SearchButton_Click"
-                                Margin="0,0,8,0"
-                                Style="{DynamicResource MaterialDesignOutlinedButton}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Magnify" Margin="0,0,4,0" />
-                                <TextBlock Text="Поиск" />
-                            </StackPanel>
-                        </Button>
+                        <!-- Фильтр по полу -->
+                        <ComboBox x:Name="GenderComboBox"
+                                  Width="150"
+                                  Margin="0,0,8,0"
+                                  DisplayMemberPath="Name"
+                                  materialDesign:HintAssist.Hint="Пол"
+                                  SelectionChanged="FilterComboBox_SelectionChanged"
+                                  Style="{DynamicResource MaterialDesignOutlinedComboBox}"/>
 
+                        <!-- Фильтр по факультету -->
+                        <ComboBox x:Name="FacultyComboBox"
+                                  Width="200"
+                                  Margin="0,0,8,0"
+                                  DisplayMemberPath="Name"
+                                  materialDesign:HintAssist.Hint="Факультет"
+                                  SelectionChanged="FilterComboBox_SelectionChanged"
+                                  Style="{DynamicResource MaterialDesignOutlinedComboBox}"/>
+
+                        <!-- Кнопки действий -->
                         <Button Click="AddPatientButton_Click"
                                 Margin="0,0,8,0"
                                 Style="{DynamicResource MaterialDesignRaisedButton}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Plus" Margin="0,0,4,0" />
-                                <TextBlock Text="Добавить" />
+                                <materialDesign:PackIcon Kind="Plus" Margin="0,0,4,0"/>
+                                <TextBlock Text="Добавить"/>
                             </StackPanel>
                         </Button>
 
@@ -60,8 +74,8 @@
                                 Margin="0,0,8,0"
                                 Style="{DynamicResource MaterialDesignOutlinedButton}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Pencil" Margin="0,0,4,0" />
-                                <TextBlock Text="Редактировать" />
+                                <materialDesign:PackIcon Kind="Pencil" Margin="0,0,4,0"/>
+                                <TextBlock Text="Редактировать"/>
                             </StackPanel>
                         </Button>
 
@@ -69,17 +83,16 @@
                                 Margin="0,0,8,0"
                                 Style="{DynamicResource MaterialDesignOutlinedButton}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Delete" Margin="0,0,4,0" />
-                                <TextBlock Text="Удалить" />
+                                <materialDesign:PackIcon Kind="Delete" Margin="0,0,4,0"/>
+                                <TextBlock Text="Удалить"/>
                             </StackPanel>
                         </Button>
 
                         <Button Click="ViewAppointmentsButton_Click"
-                                Margin="0,0,8,0"
                                 Style="{DynamicResource MaterialDesignOutlinedButton}">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="History" Margin="0,0,4,0" />
-                                <TextBlock Text="История посещений" />
+                                <materialDesign:PackIcon Kind="History" Margin="0,0,4,0"/>
+                                <TextBlock Text="История посещений"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -88,24 +101,18 @@
                     <DataGrid x:Name="PatientsDataGrid"
                               Grid.Row="1"
                               AutoGenerateColumns="False"
-                              ScrollViewer.CanContentScroll="True"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto"
-                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               IsReadOnly="True"
                               SelectionMode="Single"
                               SelectionUnit="FullRow"
                               RowHeight="40"
-                              SelectionChanged="PatientsDataGrid_SelectionChanged"
-                              MouseDoubleClick="PatientsDataGrid_MouseDoubleClick"
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
-                              CanUserReorderColumns="False"
-                              CanUserResizeRows="False"
-                              CanUserSortColumns="True"
                               materialDesign:DataGridAssist.CellPadding="8,6"
                               Style="{DynamicResource MaterialDesignDataGrid}"
                               CellStyle="{DynamicResource MaterialDesignDataGridCell}"
-                              ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}">
+                              ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
+                              MouseDoubleClick="PatientsDataGrid_MouseDoubleClick">
+
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ФИО" Width="*">
                                 <DataGridTextColumn.Binding>
@@ -116,27 +123,28 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="100"/>
+                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDate, StringFormat=dd.MM.yyyy}" Width="120"/>
                             <DataGridTextColumn Header="Пол" Binding="{Binding Gender.Name}" Width="80"/>
                             <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="120"/>
                             <DataGridTextColumn Header="Группа" Binding="{Binding StudentCard.Group.Name}" Width="120"/>
-                            <DataGridTextColumn Header="Факультет" Binding="{Binding StudentCard.Group.Faculty.ShortName}" Width="120"/>
+                            <DataGridTextColumn Header="Факультет" Binding="{Binding StudentCard.Group.Faculty.Name}" Width="200"/>
                             <DataGridTextColumn Header="Мед. книжка" Binding="{Binding MedicalCardNumber}" Width="120"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <!-- Статус бар -->
+                    <!-- Статус-бар -->
                     <StatusBar Grid.Row="2" Background="{DynamicResource MaterialDesignToolBarBackground}">
                         <StatusBarItem>
-                            <TextBlock x:Name="StatusText" Text="Готово" />
+                            <TextBlock x:Name="StatusText" Text="Готово"/>
                         </StatusBarItem>
                         <StatusBarItem HorizontalAlignment="Right">
-                            <TextBlock Text="{Binding ElementName=PatientsDataGrid, Path=Items.Count, StringFormat=Всего пациентов: {0}}" />
+                            <TextBlock Text="{Binding ElementName=PatientsDataGrid, Path=Items.Count, StringFormat=Всего пациентов: {0}}"/>
                         </StatusBarItem>
                     </StatusBar>
                 </Grid>
             </TabItem>
 
+            <!-- Вкладка Запись на приём -->
             <TabItem Header="Запись на приём">
                 <local:AvailableDoctorsPanel />
             </TabItem>

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace StudentClinicMIS.Data.Repositories
 {

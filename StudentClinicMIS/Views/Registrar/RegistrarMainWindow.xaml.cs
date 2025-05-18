@@ -1,13 +1,13 @@
-﻿using StudentClinicMIS.Data.Interfaces;
-using StudentClinicMIS.Models;
-using StudentClinicMIS.Views.Registrar;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using StudentClinicMIS.Data.Interfaces;
+using StudentClinicMIS.Models;
 
 namespace StudentClinicMIS.Views.Registrar
 {
@@ -15,22 +15,20 @@ namespace StudentClinicMIS.Views.Registrar
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IAppointmentRepository _appointmentRepository;
-        private ObservableCollection<Patient> _patients;
+        private readonly ObservableCollection<Patient> _patients = new();
+        private List<Patient> _allPatients = new();
 
-        public Patient? SelectedPatient { get; private set; }
+        public Patient? SelectedPatient => PatientsDataGrid.SelectedItem as Patient;
 
         public RegistrarMainWindow(IPatientRepository patientRepository, IAppointmentRepository appointmentRepository)
         {
             InitializeComponent();
             _patientRepository = patientRepository;
             _appointmentRepository = appointmentRepository;
-            _patients = new ObservableCollection<Patient>();
-
             PatientsDataGrid.ItemsSource = _patients;
-            Loaded += async (s, e) => await LoadPatientsAsync();
-            MainTabControl.SelectionChanged += MainTabControl_SelectionChanged;
-            PatientsDataGrid.SelectionChanged += PatientsDataGrid_SelectionChanged;
+            Loaded += async (_, _) => await LoadPatientsAsync();
             PatientsDataGrid.MouseDoubleClick += PatientsDataGrid_MouseDoubleClick;
+            MainTabControl.SelectionChanged += MainTabControl_SelectionChanged;
         }
 
         private async Task LoadPatientsAsync()
@@ -39,12 +37,26 @@ namespace StudentClinicMIS.Views.Registrar
             {
                 StatusText.Text = "Загрузка пациентов...";
                 var patients = await _patientRepository.GetAllAsync();
-                _patients.Clear();
-                foreach (var patient in patients.OrderBy(p => p.LastName))
-                {
-                    _patients.Add(patient);
-                }
-                StatusText.Text = $"Загружено {_patients.Count} пациентов";
+
+                _allPatients = patients.ToList();
+
+                var genders = _allPatients
+                    .Where(p => p.Gender != null)
+                    .Select(p => p.Gender)
+                    .Distinct()
+                    .OrderBy(g => g.Name)
+                    .ToList();
+                GenderComboBox.ItemsSource = genders;
+
+                var faculties = _allPatients
+                    .Where(p => p.StudentCard?.Group?.Faculty != null)
+                    .Select(p => p.StudentCard.Group.Faculty)
+                    .Distinct()
+                    .OrderBy(f => f.Name)
+                    .ToList();
+                FacultyComboBox.ItemsSource = faculties;
+
+                ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -53,42 +65,40 @@ namespace StudentClinicMIS.Views.Registrar
             }
         }
 
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
-            {
-                PatientsDataGrid.ItemsSource = _patients;
-            }
-        }
-
-        private async void SearchButton_Click(object sender, RoutedEventArgs e)
+        private void ApplyFilters()
         {
             string query = SearchTextBox.Text.Trim().ToLower();
+            string? selectedGender = GenderComboBox.SelectedValue as string;
+            string? selectedFaculty = FacultyComboBox.SelectedValue as string;
 
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                await LoadPatientsAsync();
-                return;
-            }
-
-            try
-            {
-                var filtered = _patients.Where(p =>
+            var filtered = _allPatients.Where(p =>
+                (string.IsNullOrWhiteSpace(query) ||
                     (p.LastName?.ToLower().Contains(query) == true ||
                      p.FirstName?.ToLower().Contains(query) == true ||
                      p.MiddleName?.ToLower().Contains(query) == true ||
                      p.Phone?.Contains(query) == true ||
-                     p.InsuranceNumber?.Contains(query) == true)
-                ).ToList();
+                     p.InsuranceNumber?.Contains(query) == true)) &&
+                (string.IsNullOrWhiteSpace(selectedGender) || p.Gender?.Name == selectedGender) &&
+                (string.IsNullOrWhiteSpace(selectedFaculty) || p.StudentCard?.Group?.Faculty?.ShortName == selectedFaculty)
+            ).OrderBy(p => p.LastName).ToList();
 
-                PatientsDataGrid.ItemsSource = filtered;
-                StatusText.Text = $"Найдено {filtered.Count} пациентов";
-            }
-            catch (Exception ex)
+            _patients.Clear();
+            foreach (var patient in filtered)
             {
-                StatusText.Text = "Ошибка поиска";
-                ShowErrorMessage($"Ошибка поиска: {ex.Message}");
+                _patients.Add(patient);
             }
+
+            StatusText.Text = $"Найдено {_patients.Count} пациентов";
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplyFilters();
+        }
+
+        private void FilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFilters();
         }
 
         private async void AddPatientButton_Click(object sender, RoutedEventArgs e)
@@ -106,33 +116,6 @@ namespace StudentClinicMIS.Views.Registrar
             {
                 StatusText.Text = "Ошибка добавления пациента";
                 ShowErrorMessage($"Ошибка добавления пациента: {ex.Message}");
-            }
-        }
-
-        private void PatientsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SelectedPatient = PatientsDataGrid.SelectedItem as Patient;
-        }
-
-        private void PatientsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (PatientsDataGrid.SelectedItem is Patient patient)
-            {
-                e.Handled = true;
-                SelectedPatient = patient;
-                foreach (TabItem tab in MainTabControl.Items)
-                {
-                    if (tab.Header?.ToString() == "Запись на приём")
-                    {
-                        MainTabControl.SelectedItem = tab;
-                        if (tab.Content is AvailableDoctorsPanel panel)
-                        {
-                            panel.CurrentPatient = SelectedPatient;
-                            panel.UpdatePatientInfo();
-                        }
-                        break;
-                    }
-                }
             }
         }
 
@@ -211,6 +194,27 @@ namespace StudentClinicMIS.Views.Registrar
             {
                 StatusText.Text = "Ошибка загрузки приёмов";
                 ShowErrorMessage($"Ошибка загрузки приёмов: {ex.Message}");
+            }
+        }
+
+        private void PatientsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (PatientsDataGrid.SelectedItem is Patient patient)
+            {
+                e.Handled = true;
+                foreach (TabItem tab in MainTabControl.Items)
+                {
+                    if (tab.Header?.ToString() == "Запись на приём")
+                    {
+                        MainTabControl.SelectedItem = tab;
+                        if (tab.Content is AvailableDoctorsPanel panel)
+                        {
+                            panel.CurrentPatient = SelectedPatient;
+                            panel.UpdatePatientInfo();
+                        }
+                        break;
+                    }
+                }
             }
         }
 
