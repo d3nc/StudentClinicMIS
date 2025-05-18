@@ -1,0 +1,58 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+      db:
+            image: postgres:15
+            container_name: clinic_db
+            environment:
+                  POSTGRES_USER: user
+                  POSTGRES_PASSWORD: password
+                  POSTGRES_DB: polyclinic
+                  LC_COLLATE: 'ru_RU.UTF-8'
+                  LC_CTYPE: 'ru_RU.UTF-8'
+            ports:
+                  - "5433:5432"
+            volumes:
+                  - postgres_data:/var/lib/postgresql/data
+                  - ./polyclinic.dump:/docker-entrypoint-initdb.d/polyclinic.dump
+            healthcheck:
+                  test: [ "CMD-SHELL", "pg_isready -U user -d polyclinic" ]
+                  interval: 10s
+                  timeout: 5s
+                  retries: 5
+            restart: unless-stopped
+
+      app:
+            build:
+                  context: .
+                  dockerfile: Dockerfile
+            container_name: clinic_app
+            depends_on:
+                  db:
+                        condition: service_healthy
+            ports:
+                  - "5000:80"
+            environment:
+                  ASPNETCORE_ENVIRONMENT: Development
+                  ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=polyclinic;Username=user;Password=password"
+            volumes:
+                  - .:/app
+                  - ~/.aspnet/https:/https:ro
+            restart: unless-stopped
+
+      pgadmin:
+            image: dpage/pgadmin4
+            container_name: clinic_pgadmin
+            environment:
+                  PGADMIN_DEFAULT_EMAIL: admin@clinic.local
+                  PGADMIN_DEFAULT_PASSWORD: securepassword
+            ports:
+                  - "5050:80"
+            depends_on:
+                  - db
+            restart: unless-stopped
+
+volumes:
+      postgres_data:
+            name: clinic_postgres_data

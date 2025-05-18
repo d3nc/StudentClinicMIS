@@ -56,7 +56,11 @@ public partial class PolyclinicContext : DbContext
     public virtual DbSet<Test> Tests { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
+    public DbSet<Faculty> Faculties { get; set; }
+    public DbSet<StudentGroup> StudentGroups { get; set; }
+    public DbSet<StudentCard> StudentCards { get; set; }
+    public DbSet<Vaccination> Vaccinations { get; set; }
+    public DbSet<MedicalClearance> MedicalClearances { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=polyclinic;Username=user;Password=password");
@@ -64,7 +68,35 @@ public partial class PolyclinicContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("ru_RU.UTF-8");
+        modelBuilder.Entity<StudentGroup>()
+        .HasKey(g => g.GroupId);
 
+
+        modelBuilder.Entity<Patient>()
+        .HasOne(p => p.StudentCard)
+        .WithOne(s => s.Patient)
+        .HasForeignKey<StudentCard>(s => s.PatientId);
+
+        // Конфигурация StudentCard
+        modelBuilder.Entity<StudentCard>()
+            .HasOne(sc => sc.Group)
+            .WithMany(g => g.StudentCards)
+            .HasForeignKey(sc => sc.GroupId);
+
+        modelBuilder.Entity<MedicalClearance>(entity =>
+        {
+            entity.HasKey(e => e.ClearanceId);
+
+            entity.HasOne(mc => mc.Patient)
+                .WithMany(p => p.MedicalClearances)
+                .HasForeignKey(mc => mc.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(mc => mc.Doctor)
+                .WithMany()
+                .HasForeignKey(mc => mc.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
         modelBuilder.Entity<Appointment>(entity =>
         {
             entity.HasKey(e => e.AppointmentId).HasName("appointments_pkey");
@@ -411,7 +443,6 @@ public partial class PolyclinicContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("phone");
             entity.Property(e => e.RegistrationDate).HasColumnName("registration_date");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Gender).WithMany(p => p.Patients)
                 .HasForeignKey(d => d.GenderId)
@@ -422,11 +453,6 @@ public partial class PolyclinicContext : DbContext
                 .HasForeignKey(d => d.InsuranceCompanyId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("patients_insurance_company_id_fkey");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Patients)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("patients_user_id_fkey");
         });
 
         modelBuilder.Entity<PatientAppointment>(entity =>
@@ -629,7 +655,6 @@ public partial class PolyclinicContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("username");
         });
-        modelBuilder.HasSequence("nonъзователи_id_nользователя_seq");
 
         OnModelCreatingPartial(modelBuilder);
     }

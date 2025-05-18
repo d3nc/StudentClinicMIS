@@ -88,6 +88,9 @@
                     <DataGrid x:Name="PatientsDataGrid"
                               Grid.Row="1"
                               AutoGenerateColumns="False"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               IsReadOnly="True"
                               SelectionMode="Single"
                               SelectionUnit="FullRow"
@@ -104,18 +107,21 @@
                               CellStyle="{DynamicResource MaterialDesignDataGridCell}"
                               ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ФИО" Width="*" IsReadOnly="True">
+                            <DataGridTextColumn Header="ФИО" Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding StringFormat="{}{0} {1} {2}">
-                                        <Binding Path="LastName" />
-                                        <Binding Path="FirstName" />
-                                        <Binding Path="MiddleName" />
+                                        <Binding Path="LastName"/>
+                                        <Binding Path="FirstName"/>
+                                        <Binding Path="MiddleName"/>
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding FormattedBirthDate}" Width="120" />
-                            <DataGridTextColumn Header="Пол" Binding="{Binding GenderName}" Width="80" />
-                            <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="150" />
+                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="100"/>
+                            <DataGridTextColumn Header="Пол" Binding="{Binding Gender.Name}" Width="80"/>
+                            <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="120"/>
+                            <DataGridTextColumn Header="Группа" Binding="{Binding StudentCard.Group.Name}" Width="120"/>
+                            <DataGridTextColumn Header="Факультет" Binding="{Binding StudentCard.Group.Faculty.ShortName}" Width="120"/>
+                            <DataGridTextColumn Header="Мед. книжка" Binding="{Binding MedicalCardNumber}" Width="120"/>
                         </DataGrid.Columns>
                     </DataGrid>
 

@@ -19,6 +19,9 @@ namespace StudentClinicMIS.Data.Repositories
         {
             return await _context.Patients
                 .Include(p => p.Gender)
+                .Include(p => p.StudentCard)
+                    .ThenInclude(sc => sc.Group)
+                        .ThenInclude(g => g.Faculty)
                 .OrderBy(p => p.LastName)
                 .ToListAsync();
         }
@@ -51,5 +54,6 @@ namespace StudentClinicMIS.Data.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
     }
 }
