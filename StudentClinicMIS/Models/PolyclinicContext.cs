@@ -61,6 +61,7 @@ public partial class PolyclinicContext : DbContext
     public DbSet<StudentCard> StudentCards { get; set; }
     public DbSet<Vaccination> Vaccinations { get; set; }
     public DbSet<MedicalClearance> MedicalClearances { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=polyclinic;Username=user;Password=password");
@@ -82,6 +83,7 @@ public partial class PolyclinicContext : DbContext
             .HasOne(sc => sc.Group)
             .WithMany(g => g.StudentCards)
             .HasForeignKey(sc => sc.GroupId);
+
 
         modelBuilder.Entity<MedicalClearance>(entity =>
         {

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using StudentClinicMIS.Data.Interfaces;
+using StudentClinicMIS.Data.Repositories;
 using StudentClinicMIS.Models;
 
 namespace StudentClinicMIS.Views.Registrar
@@ -15,22 +16,53 @@ namespace StudentClinicMIS.Views.Registrar
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IFacultyRepository _facultyRepository;
+        private readonly IGroupRepository _groupRepository; // Добавлено поле
         private readonly ObservableCollection<Patient> _patients = new();
         private List<Patient> _allPatients = new();
 
         public Patient? SelectedPatient => PatientsDataGrid.SelectedItem as Patient;
 
-        public RegistrarMainWindow(IPatientRepository patientRepository, IAppointmentRepository appointmentRepository)
+        public RegistrarMainWindow(
+            IPatientRepository patientRepository,
+            IAppointmentRepository appointmentRepository,
+            IFacultyRepository facultyRepository,
+            IGroupRepository groupRepository) // Добавлен параметр
         {
             InitializeComponent();
             _patientRepository = patientRepository;
             _appointmentRepository = appointmentRepository;
+            _facultyRepository = facultyRepository;
+            _groupRepository = groupRepository; // Инициализация поля
             PatientsDataGrid.ItemsSource = _patients;
             Loaded += async (_, _) => await LoadPatientsAsync();
             PatientsDataGrid.MouseDoubleClick += PatientsDataGrid_MouseDoubleClick;
             MainTabControl.SelectionChanged += MainTabControl_SelectionChanged;
         }
 
+        private async void AddPatientButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var addWindow = new AddPatientWindow(
+                    _patientRepository,
+                    _facultyRepository,
+                    _groupRepository, // Используем поле класса
+                    GenderComboBox.ItemsSource as IEnumerable<Gender>,
+                    null);
+
+                if (addWindow.ShowDialog() == true)
+                {
+                    await LoadPatientsAsync();
+                    ShowInfoMessage("Пациент успешно добавлен.");
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = "Ошибка добавления пациента";
+                ShowErrorMessage($"Ошибка добавления пациента: {ex.Message}");
+            }
+        }
         private async Task LoadPatientsAsync()
         {
             try
@@ -99,24 +131,6 @@ namespace StudentClinicMIS.Views.Registrar
         private void FilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilters();
-        }
-
-        private async void AddPatientButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var addWindow = new AddPatientWindow(_patientRepository);
-                if (addWindow.ShowDialog() == true)
-                {
-                    await LoadPatientsAsync();
-                    ShowInfoMessage("Пациент успешно добавлен.");
-                }
-            }
-            catch (Exception ex)
-            {
-                StatusText.Text = "Ошибка добавления пациента";
-                ShowErrorMessage($"Ошибка добавления пациента: {ex.Message}");
-            }
         }
 
         private async void EditPatientButton_Click(object sender, RoutedEventArgs e)

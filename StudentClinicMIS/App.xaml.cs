@@ -13,6 +13,7 @@ using StudentClinicMIS.Views.Registrar;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using StudentClinicMIS.ViewModels.Registrar;
+using StudentClinicMIS.ViewModels.Doctor;
 namespace StudentClinicMIS
 {
     public partial class App : Application
@@ -42,13 +43,17 @@ namespace StudentClinicMIS
                     services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
                     services.AddScoped<IDoctorRepository, DoctorRepository>();
                     services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+                    services.AddScoped<Doctor>();
                     services.AddScoped<AvailableDoctorsPanelViewModel>();
 
                     // Окна с внедрением зависимостей
                     services.AddTransient<LoginWindow>();
-                    services.AddTransient<AdminMainWindow>();
+                    services.AddScoped<IFacultyRepository, FacultyRepository>();
+                    services.AddTransient<RegistrarMainWindow>();
                     services.AddTransient<DoctorMainWindow>();
                     services.AddTransient<RegistrarMainWindow>();
+                    services.AddScoped<DoctorMainViewModel>();
+                    services.AddScoped<IGroupRepository, GroupRepository>();
                 })
                 .Build();
         }

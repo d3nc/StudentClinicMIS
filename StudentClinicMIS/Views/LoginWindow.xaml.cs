@@ -59,7 +59,7 @@ namespace StudentClinicMIS.Views
                 {
                     mainWindow = user.Role?.ToLower() switch
                     {
-                        "admin" => App.AppHost.Services.GetService<AdminMainWindow>(),
+
                         "doctor" => App.AppHost.Services.GetService<DoctorMainWindow>(),
                         "receptionist" => App.AppHost.Services.GetService<RegistrarMainWindow>(),
                         _ => null

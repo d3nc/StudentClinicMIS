@@ -1,0 +1,112 @@
+﻿<Window x:Class="StudentClinicMIS.Views.AddPatientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Данные пациента" 
+        Height="650" 
+        Width="550"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen">
+
+    <Border Background="{DynamicResource MaterialDesignPaper}"
+            CornerRadius="8"
+            Padding="25"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            Effect="{StaticResource MaterialDesignShadowDepth4}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0" Margin="0,0,0,20" MouseDown="Window_MouseDown">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="AccountPlus" Width="32" Height="32"
+                                             Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                             Margin="0,0,15,0"/>
+                    <TextBlock Text="Данные пациента" FontSize="24" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Поля формы -->
+            <StackPanel Grid.Row="1" Margin="0,10,0,20">
+                <TextBox x:Name="LastNameBox" Margin="0,0,0,15"
+                         materialDesign:HintAssist.Hint="Фамилия*"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         FontSize="18"
+                         PreviewTextInput="TextInput_OnlyLetters"/>
+
+                <TextBox x:Name="FirstNameBox" Margin="0,0,0,15"
+                         materialDesign:HintAssist.Hint="Имя*"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         FontSize="18"
+                         PreviewTextInput="TextInput_OnlyLetters"/>
+
+                <TextBox x:Name="MiddleNameBox" Margin="0,0,0,15"
+                         materialDesign:HintAssist.Hint="Отчество"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         FontSize="18"
+                         PreviewTextInput="TextInput_OnlyLetters"/>
+
+                <ComboBox x:Name="GenderComboBox" Margin="0,0,0,15"
+                          materialDesign:HintAssist.Hint="Пол*"
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                          FontSize="18"
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="GenderId"/>
+
+                <ComboBox x:Name="FacultyComboBox" Margin="0,0,0,15"
+                          materialDesign:HintAssist.Hint="Факультет*"
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                          FontSize="18"
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="FacultyId"
+                          SelectionChanged="FacultyComboBox_SelectionChanged"/>
+
+                <ComboBox x:Name="GroupComboBox" Margin="0,0,0,15"
+                          materialDesign:HintAssist.Hint="Группа*"
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                          FontSize="18"
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="GroupId"
+                          IsEnabled="False"/>
+
+                <TextBox x:Name="PhoneBox" Margin="0,0,0,15"
+                         materialDesign:HintAssist.Hint="Телефон* (в формате +7 XXX XXX-XX-XX)"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         FontSize="18"
+                         Text="+7 ("
+                         PreviewTextInput="PhoneBox_PreviewTextInput"
+                         TextChanged="PhoneBox_TextChanged"/>
+
+                <TextBox x:Name="BirthDateTextBox" Margin="0,0,0,15"
+                         materialDesign:HintAssist.Hint="Дата рождения* (ДД.ММ.ГГГГ)"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         FontSize="18"
+                         PreviewTextInput="BirthDateTextBox_PreviewTextInput"
+                         TextChanged="BirthDateTextBox_TextChanged"
+                         LostFocus="BirthDateTextBox_LostFocus"/>
+            </StackPanel>
+
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="CancelButton" Content="Отмена" Width="150" Height="45"
+                        FontSize="18" Margin="0,0,15,0"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Click="CancelButton_Click"
+                        IsCancel="True"/>
+
+                <Button x:Name="SaveButton" Content="Сохранить" Width="150" Height="45"
+                        FontSize="18"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Click="SaveButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

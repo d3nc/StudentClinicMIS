@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudentClinicMIS.Models;
 
@@ -26,4 +27,7 @@ public partial class MedicalRecord
     public virtual Patient Patient { get; set; } = null!;
 
     public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+
+    [NotMapped]
+    public DateTime CreatedAt => RecordDate ?? DateTime.MinValue;
 }

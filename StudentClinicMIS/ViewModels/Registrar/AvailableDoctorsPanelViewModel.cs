@@ -1,115 +1,68 @@
-﻿using StudentClinicMIS.Data.Interfaces;
-using StudentClinicMIS.Models;
+﻿using StudentClinicMIS.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using StudentClinicMIS.Data.Interfaces;
+using System.ComponentModel;
+using StudentClinicMIS.ViewModels.Doctor;
 
 namespace StudentClinicMIS.ViewModels.Registrar
 {
-    public class AvailableDoctorsPanelViewModel : INotifyPropertyChanged
+    public class AvailableDoctorsPanelViewModel : BaseViewModel
     {
-        private readonly IDepartmentRepository _departmentRepository;
         private readonly IDoctorRepository _doctorRepository;
+        private Models.Doctor _selectedDoctor;
 
-        public ObservableCollection<Department> Departments { get; } = new();
-        public ObservableCollection<Doctor> Doctors { get; } = new();
-        public ObservableCollection<DoctorSlotViewModel> DoctorSlots { get; } = new();
-
-        private Department? _selectedDepartment;
-        public Department? SelectedDepartment
-        {
-            get => _selectedDepartment;
-            set
-            {
-                if (SetField(ref _selectedDepartment, value))
-                {
-                    LoadDoctorsAsync();
-                }
-            }
-        }
-
-        private Doctor? _selectedDoctor;
-        public Doctor? SelectedDoctor
+        public ObservableCollection<Models.Doctor> AvailableDoctors { get; } = new();
+        public Models.Doctor SelectedDoctor
         {
             get => _selectedDoctor;
             set
             {
-                if (SetField(ref _selectedDoctor, value))
-                {
-                    LoadDoctorSlotsAsync();
-                }
+                _selectedDoctor = value;
+                OnPropertyChanged();
+                LoadDoctorSchedule();
             }
         }
 
-        private DateTime? _selectedDate;
-        public DateTime? SelectedDate
-        {
-            get => _selectedDate;
-            set
-            {
-                if (SetField(ref _selectedDate, value))
-                {
-                    LoadDoctorSlotsAsync();
-                }
-            }
-        }
+        public ObservableCollection<DoctorSlotViewModel> DoctorSlots { get; } = new();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AvailableDoctorsPanelViewModel(IDepartmentRepository departmentRepository, IDoctorRepository doctorRepository)
+        public AvailableDoctorsPanelViewModel(IDoctorRepository doctorRepository)
         {
-            _departmentRepository = departmentRepository;
             _doctorRepository = doctorRepository;
-
-            _ = LoadDepartmentsAsync();
+            LoadDoctors();
         }
 
-        private async Task LoadDepartmentsAsync()
+        private async void LoadDoctors()
         {
-            Departments.Clear();
-            var list = await _departmentRepository.GetAllAsync();
-            foreach (var dept in list)
-                Departments.Add(dept);
+            var doctors = await _doctorRepository.GetByDepartmentIdAsync(1); // Пример ID отделения
+            AvailableDoctors.Clear();
+            foreach (var doctor in doctors)
+            {
+                AvailableDoctors.Add(doctor);
+            }
         }
 
-        private async Task LoadDoctorsAsync()
+        private async void LoadDoctorSchedule()
         {
-            Doctors.Clear();
-            if (SelectedDepartment == null)
-                return;
+            if (SelectedDoctor == null) return;
 
-            var list = await _doctorRepository.GetByDepartmentIdAsync(SelectedDepartment.DepartmentId);
-            foreach (var doctor in list)
-                Doctors.Add(doctor);
-        }
-
-        private async Task LoadDoctorSlotsAsync()
-        {
             DoctorSlots.Clear();
-            if (SelectedDoctor == null || SelectedDate == null)
-                return;
+            var schedule = await _doctorRepository.GetScheduleForDoctorAsync(
+                SelectedDoctor.DoctorId,
+                DateTime.Today.DayOfWeek);
 
-            var dayOfWeek = SelectedDate.Value.DayOfWeek;
-            var schedule = await _doctorRepository.GetScheduleForDoctorAsync(SelectedDoctor.DoctorId, dayOfWeek);
             if (schedule != null)
             {
-                var slotVm = new DoctorSlotViewModel(SelectedDoctor, schedule, DateOnly.FromDateTime(SelectedDate.Value)); // ✅ DateOnly
+                var slotViewModel = new DoctorSlotViewModel(
+                    SelectedDoctor,
+                    schedule,
+                    DateOnly.FromDateTime(DateTime.Today));
 
-                DoctorSlots.Add(slotVm);
+                DoctorSlots.Add(slotViewModel);
             }
-        }
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (Equals(field, value))
-                return false;
-
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            return true;
         }
     }
 }

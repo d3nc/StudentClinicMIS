@@ -8,11 +8,11 @@ namespace StudentClinicMIS.ViewModels.Registrar
     {
         public string FullName => $"{Doctor.Employee?.LastName} {Doctor.Employee?.FirstName} {Doctor.Employee?.MiddleName}";
         public string Specialization => Doctor.Specialization?.Name ?? "";
-        public ObservableCollection<DoctorScheduleSlot> FreeSlots { get; } = new();
+        public ObservableCollection<ScheduleSlot> FreeSlots { get; } = new();
 
-        public Doctor Doctor { get; }
+        public Models.Doctor Doctor { get; }
 
-        public DoctorSlotViewModel(Doctor doctor, DoctorScheduleEntity schedule, DateOnly appointmentDate)
+        public DoctorSlotViewModel(Models.Doctor doctor, DoctorScheduleEntity schedule, DateOnly appointmentDate)
         {
             Doctor = doctor;
 
@@ -23,15 +23,22 @@ namespace StudentClinicMIS.ViewModels.Registrar
             {
                 var endTime = dateTime.AddMinutes(30);
 
-                FreeSlots.Add(new DoctorScheduleSlot
+                FreeSlots.Add(new ScheduleSlot
                 {
-                    StartTime = dateTime.TimeOfDay, // TimeSpan
-                    EndTime = endTime.TimeOfDay,    // TimeSpan
-                    Display = $"{dateTime:HH\\:mm}-{endTime:HH\\:mm}"
+                    Start = dateTime.TimeOfDay,
+                    End = endTime.TimeOfDay,
+                    SlotDisplay = $"{dateTime:HH\\:mm}-{endTime:HH\\:mm}"
                 });
 
                 dateTime = endTime;
             }
         }
+    }
+
+    public class ScheduleSlot
+    {
+        public TimeSpan Start { get; set; }
+        public TimeSpan End { get; set; }
+        public string SlotDisplay { get; set; }
     }
 }
