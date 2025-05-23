@@ -14,6 +14,9 @@ using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using StudentClinicMIS.ViewModels.Registrar;
 using StudentClinicMIS.ViewModels.Doctor;
+using StudentClinicMIS.Views.DoctorModels;
+using StudentClinicMIS.Views.Admin;
+using StudentClinicMIS.ViewModels.Admin;
 namespace StudentClinicMIS
 {
     public partial class App : Application
@@ -47,6 +50,8 @@ namespace StudentClinicMIS
                     services.AddScoped<AvailableDoctorsPanelViewModel>();
 
                     // Окна с внедрением зависимостей
+                    services.AddTransient<AdminMainWindow>();
+                    services.AddTransient<UsersPageViewModel>();
                     services.AddTransient<LoginWindow>();
                     services.AddScoped<IFacultyRepository, FacultyRepository>();
                     services.AddTransient<RegistrarMainWindow>();

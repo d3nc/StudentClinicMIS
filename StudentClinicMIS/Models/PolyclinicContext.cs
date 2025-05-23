@@ -641,9 +641,6 @@ public partial class PolyclinicContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValue(true)
-                .HasColumnName("is_active");
             entity.Property(e => e.LastLogin)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("last_login");

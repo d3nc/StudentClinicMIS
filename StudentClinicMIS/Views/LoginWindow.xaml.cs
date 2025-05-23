@@ -6,6 +6,8 @@ using StudentClinicMIS.Views.Registrar;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using StudentClinicMIS.Views.DoctorModels;
+using StudentClinicMIS.Views.Admin;
 
 namespace StudentClinicMIS.Views
 {
@@ -42,7 +44,7 @@ namespace StudentClinicMIS.Views
             try
             {
                 var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Username == username && u.IsActive == true);
+                    .FirstOrDefaultAsync(u => u.Username == username);
 
                 if (user == null || !_passwordHasher.Verify(password, user.Password))
                 {
@@ -59,7 +61,7 @@ namespace StudentClinicMIS.Views
                 {
                     mainWindow = user.Role?.ToLower() switch
                     {
-
+                        "admin" => App.AppHost.Services.GetService<AdminMainWindow>(),
                         "doctor" => App.AppHost.Services.GetService<DoctorMainWindow>(),
                         "receptionist" => App.AppHost.Services.GetService<RegistrarMainWindow>(),
                         _ => null
