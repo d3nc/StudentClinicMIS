@@ -112,10 +112,10 @@ namespace StudentClinicMIS.Views.Registrar
 
             for (var time = start; time < end; time = time.Add(interval))
             {
-                bool occupied = appointments.Any(a => a.StartTime == time);
+                bool occupied = appointments.Any(a => a.StartTime == TimeOnly.FromTimeSpan(time - start + TimeSpan.FromHours(start.Hour) + TimeSpan.FromMinutes(start.Minute)));
                 _slots.Add(new AppointmentSlot
                 {
-                    StartTime = time,
+                    StartTime = TimeOnly.FromTimeSpan(time - start + TimeSpan.FromHours(start.Hour) + TimeSpan.FromMinutes(start.Minute)),
                     IsOccupied = occupied
                 });
             }

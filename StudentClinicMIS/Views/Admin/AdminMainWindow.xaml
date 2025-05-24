@@ -27,7 +27,11 @@
                         Content="Пользователи"
                         Margin="0 4"
                         Click="UsersButton_Click"/>
-                <!-- Остальные кнопки навигации можно добавить позже -->
+                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Foreground="White"
+                        Content="Врачи"
+                        Margin="0 4"
+                        Click="DoctorsButton_Click"/>
             </StackPanel>
         </Border>
 

@@ -139,7 +139,14 @@ namespace StudentClinicMIS.Views.Registrar
             {
                 if (PatientsDataGrid.SelectedItem is Patient selectedPatient)
                 {
-                    var editWindow = new EditPatientWindow(selectedPatient, _patientRepository);
+                    var editWindow = new EditPatientWindow(
+                        selectedPatient,
+                        _patientRepository,
+                        _facultyRepository,  // Добавлен факультет репозиторий
+                        _groupRepository,    // Добавлен групповой репозиторий
+                        GenderComboBox.ItemsSource as IEnumerable<Gender>  // Добавлен список полов
+                    );
+
                     if (editWindow.ShowDialog() == true)
                     {
                         await LoadPatientsAsync();

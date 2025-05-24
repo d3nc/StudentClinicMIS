@@ -21,8 +21,6 @@ public partial class Appointment
 
     public string? Purpose { get; set; }
 
-    public string? Notes { get; set; }
-
     public DateTime? CreatedAt { get; set; }
 
     public virtual Doctor Doctor { get; set; } = null!;

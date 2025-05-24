@@ -23,9 +23,8 @@
                                     Width="200"/>
 				<DataGridTextColumn Header="Специализация" Binding="{Binding Doctor.Specialization.Name}" Width="150"/>
 				<DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="100"/>
-				<DataGridTextColumn Header="Цель" Binding="{Binding Purpose}" Width="200"/>
-				<DataGridTextColumn Header="Примечания" Binding="{Binding Notes}" Width="200"/>
-			</DataGrid.Columns>
+                <DataGridTextColumn Header="Цель" Binding="{Binding Purpose}" Width="200"/>
+            </DataGrid.Columns>
 		</DataGrid>
 	</Grid>
 </Window>

@@ -15,5 +15,9 @@ namespace StudentClinicMIS.Views.Admin
         {
             MainContent.Content = new UsersPage(); // переключение вручную
         }
+        private void DoctorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new DoctorsPage();
+        }
     }
 }

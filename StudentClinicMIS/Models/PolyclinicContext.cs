@@ -113,7 +113,6 @@ public partial class PolyclinicContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
             entity.Property(e => e.EndTime).HasColumnName("end_time");
-            entity.Property(e => e.Notes).HasColumnName("notes");
             entity.Property(e => e.PatientId).HasColumnName("patient_id");
             entity.Property(e => e.Purpose)
                 .HasMaxLength(255)

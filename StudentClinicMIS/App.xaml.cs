@@ -48,7 +48,8 @@ namespace StudentClinicMIS
                     services.AddScoped<IDepartmentRepository, DepartmentRepository>();
                     services.AddScoped<Doctor>();
                     services.AddScoped<AvailableDoctorsPanelViewModel>();
-
+                    services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+                    services.AddScoped<ISpecializationRepository, SpecializationRepository>();
                     // Окна с внедрением зависимостей
                     services.AddTransient<AdminMainWindow>();
                     services.AddTransient<UsersPageViewModel>();
@@ -59,6 +60,9 @@ namespace StudentClinicMIS
                     services.AddTransient<RegistrarMainWindow>();
                     services.AddScoped<DoctorMainViewModel>();
                     services.AddScoped<IGroupRepository, GroupRepository>();
+                    services.AddTransient<DoctorsPageViewModel>();
+                    services.AddTransient<AddEditDoctorViewModel>();
+
                 })
                 .Build();
         }

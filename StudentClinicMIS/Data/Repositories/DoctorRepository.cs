@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using StudentClinicMIS.Data;
 using StudentClinicMIS.Data.Interfaces;
 using StudentClinicMIS.Models;
 using System.Collections.Generic;
@@ -10,35 +10,67 @@ namespace StudentClinicMIS.Data.Repositories
 {
     public class DoctorRepository : IDoctorRepository
     {
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly PolyclinicContext _context;
 
-        public DoctorRepository(IServiceScopeFactory scopeFactory)
+        public DoctorRepository(PolyclinicContext context)
         {
-            _scopeFactory = scopeFactory;
+            _context = context;
+        }
+
+        public async Task AddAsync(Doctor doctor)
+        {
+            await _context.Doctors.AddAsync(doctor);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Doctor doctor)
+        {
+            _context.Doctors.Update(doctor);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var doctor = await GetByIdAsync(id);
+            if (doctor != null)
+            {
+                _context.Doctors.Remove(doctor);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Doctor>> GetAllAsync()
+        {
+            return await _context.Doctors
+                .Include(d => d.Employee)
+                .Include(d => d.Specialization)
+                .ToListAsync();
+        }
+
+        public async Task<Doctor?> GetByIdAsync(int id)
+        {
+            return await _context.Doctors
+                .Include(d => d.Employee)
+                .Include(d => d.Specialization)
+                .FirstOrDefaultAsync(d => d.DoctorId == id);
         }
 
         public async Task<List<Doctor>> GetByDepartmentIdAsync(int departmentId)
         {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<PolyclinicContext>();
-
-            return await context.Doctors
-                .Include(d => d.Employee)
-                .Include(d => d.Specialization) 
+            return await _context.Doctors
                 .Where(d => d.Employee.DepartmentId == departmentId)
+                .Include(d => d.Employee)
+                .Include(d => d.Specialization)
                 .ToListAsync();
         }
 
-        public async Task<DoctorScheduleEntity?> GetScheduleForDoctorAsync(int doctorId, DayOfWeek dayOfWeek)
+        public async Task<DoctorScheduleEntity> GetScheduleForDoctorAsync(int doctorId, DayOfWeek dayOfWeek)
         {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<PolyclinicContext>();
-
-            return await context.DoctorSchedules1
-                .Include(s => s.Room)
-                .FirstOrDefaultAsync(s =>
-                    s.DoctorId == doctorId &&
-                    s.DayOfWeek.ToLower() == dayOfWeek.ToString().ToLower());
+            return await _context.DoctorSchedules1
+                .Include(ds => ds.Doctor)
+                .Include(ds => ds.Room)
+                .FirstOrDefaultAsync(ds => ds.DoctorId == doctorId &&
+                                       ds.DayOfWeek == dayOfWeek.ToString());
         }
     }
 }
