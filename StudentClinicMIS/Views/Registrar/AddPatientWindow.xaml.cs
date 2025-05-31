@@ -66,7 +66,6 @@ namespace StudentClinicMIS.Views
                 FacultyComboBox.DisplayMemberPath = "Name";
                 FacultyComboBox.SelectedValuePath = "FacultyId";
 
-                // Если у пациента уже есть факультет, выбираем его
                 if (_patient.StudentCard?.Group?.FacultyId.HasValue == true)
                 {
                     FacultyComboBox.SelectedValue = _patient.StudentCard.Group.FacultyId.Value;
@@ -221,7 +220,6 @@ namespace StudentClinicMIS.Views
             if (DateTime.TryParse(BirthDateTextBox.Text, out var birthDate))
                 _patient.BirthDate = DateOnly.FromDateTime(birthDate);
 
-            // Сохраняем группу
             if (GroupComboBox.SelectedValue is int groupId)
             {
                 _patient.StudentCard ??= new StudentCard();

@@ -1,81 +1,34 @@
 <Window x:Class="StudentClinicMIS.Views.DoctorModels.DoctorMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:StudentClinicMIS.ViewModels.Doctor"
-        Title="Рабочее место врача" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
-
-    <Grid Margin="10">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:StudentClinicMIS.Views.DoctorModels"
+        Title="Рабочее место врача" Height="720" Width="1280"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource MaterialDesignPaper}">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Левый блок: список приёмов и расписание -->
-        <StackPanel Grid.Column="0" Margin="10">
-            <TextBlock Text="Приёмы на сегодня" FontWeight="Bold" FontSize="16" Margin="0 0 0 10"/>
+        <StackPanel Background="{DynamicResource MaterialDesignDrawerBackground}" VerticalAlignment="Stretch">
+            <TextBlock Text="Меню" Margin="16" FontWeight="Bold" FontSize="16"/>
 
-            <ListView ItemsSource="{Binding TodayAppointments}" SelectedItem="{Binding SelectedAppointment}" Height="200">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Patient.FullName}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding Purpose}" FontStyle="Italic"/>
-                            <TextBlock>
-                                <Run Text="Время: "/>
-                                <Run Text="{Binding StartTime}"/>
-                            </TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <Separator Margin="0 10"/>
-
-            <TextBlock Text="Расписание врача" FontWeight="Bold" FontSize="16" Margin="0 0 0 10"/>
-            <ListView ItemsSource="{Binding DoctorSchedules}" Height="200">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock>
-                                <Run Text="День: "/>
-                                <Run Text="{Binding DayOfWeek}"/>
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Text="Время: "/>
-                                <Run Text="{Binding StartTime}" />
-                                <Run Text=" - " />
-                                <Run Text="{Binding EndTime}" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Text="Кабинет: "/>
-                                <Run Text="{Binding Room.RoomName}"/>
-                            </TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <ListBox x:Name="NavigationList"
+                     SelectionChanged="NavigationList_SelectionChanged"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Foreground="{DynamicResource MaterialDesignBody}"
+                     FontSize="14">
+                <ListBoxItem Content="📅 Расписание" Tag="SchedulePage"/>
+                <ListBoxItem Content="👥 Пациенты" Tag="PatientsPage"/>
+                <ListBoxItem Content="📄 История приёмов" Tag="RecordsPage"/>
+                <ListBoxItem Content="💊 Рецепты" Tag="PrescriptionsPage"/>
+                <ListBoxItem Content="🩺 Диагностика" Tag="DiagnosticsPage"/>
+            </ListBox>
         </StackPanel>
 
-        <!-- Правый блок: форма записи -->
-        <StackPanel Grid.Column="1" Margin="10" IsEnabled="{Binding IsPatientSelected}">
-            <TextBlock Text="Создание медицинской записи" FontWeight="Bold" FontSize="16" Margin="0 0 0 10"/>
-
-            <TextBlock Text="Дата:"/>
-            <DatePicker SelectedDate="{Binding NewRecordDate}" Margin="0 0 0 10"/>
-
-            <TextBlock Text="Диагноз:"/>
-            <TextBox Text="{Binding NewDiagnosis, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 10" Height="60" AcceptsReturn="True"/>
-
-            <TextBlock Text="Рекомендации:"/>
-            <TextBox Text="{Binding NewRecommendations, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 10" Height="60" AcceptsReturn="True"/>
-
-            <Button Content="Сохранить запись"
-                    Command="{Binding SaveRecordCommand}"
-                    Background="LightGreen"
-                    FontWeight="Bold"
-                    Margin="0 10 0 0"
-                    Height="35"/>
-        </StackPanel>
+        <Frame x:Name="MainFrame" Grid.Column="1" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

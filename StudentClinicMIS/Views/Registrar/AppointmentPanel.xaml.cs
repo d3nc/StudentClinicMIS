@@ -23,9 +23,6 @@ namespace YourNamespace
                 ShowErrorMessage("Пожалуйста, заполните все поля.");
                 return;
             }
-
-            // Здесь можно добавить сохранение данных
-
             ShowSuccessMessage("Запись успешно сохранена!");
         }
 

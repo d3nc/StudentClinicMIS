@@ -16,13 +16,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Вкладки -->
         <TabControl x:Name="MainTabControl"
                     Grid.Row="1"
                     Style="{DynamicResource MaterialDesignNavigationTabControl}"
                     materialDesign:ColorZoneAssist.Mode="PrimaryMid">
 
-            <!-- Вкладка Пациенты -->
             <TabItem Header="Пациенты" IsSelected="True">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -31,9 +29,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Панель управления с выравниванием по левому краю -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <!-- Поиск -->
                         <TextBox x:Name="SearchTextBox"
                                  Width="200"
                                  Margin="0,0,8,0"
@@ -42,7 +38,6 @@
                                  Style="{DynamicResource MaterialDesignOutlinedTextBox}"
                                  TextChanged="SearchTextBox_TextChanged"/>
 
-                        <!-- Фильтр по полу -->
                         <ComboBox x:Name="GenderComboBox"
                                   Width="150"
                                   Margin="0,0,8,0"
@@ -51,7 +46,6 @@
                                   SelectionChanged="FilterComboBox_SelectionChanged"
                                   Style="{DynamicResource MaterialDesignOutlinedComboBox}"/>
 
-                        <!-- Фильтр по факультету -->
                         <ComboBox x:Name="FacultyComboBox"
                                   Width="200"
                                   Margin="0,0,8,0"
@@ -60,7 +54,6 @@
                                   SelectionChanged="FilterComboBox_SelectionChanged"
                                   Style="{DynamicResource MaterialDesignOutlinedComboBox}"/>
 
-                        <!-- Кнопки действий -->
                         <Button Click="AddPatientButton_Click"
                                 Margin="0,0,8,0"
                                 Style="{DynamicResource MaterialDesignRaisedButton}">
@@ -97,7 +90,6 @@
                         </Button>
                     </StackPanel>
 
-                    <!-- Таблица пациентов -->
                     <DataGrid x:Name="PatientsDataGrid"
                               Grid.Row="1"
                               AutoGenerateColumns="False"
@@ -132,7 +124,6 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <!-- Статус-бар -->
                     <StatusBar Grid.Row="2" Background="{DynamicResource MaterialDesignToolBarBackground}">
                         <StatusBarItem>
                             <TextBlock x:Name="StatusText" Text="Готово"/>
@@ -144,7 +135,6 @@
                 </Grid>
             </TabItem>
 
-            <!-- Вкладка Запись на приём -->
             <TabItem Header="Запись на приём">
                 <local:AvailableDoctorsPanel />
             </TabItem>

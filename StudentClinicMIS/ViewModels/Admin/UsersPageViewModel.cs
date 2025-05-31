@@ -57,7 +57,6 @@ namespace StudentClinicMIS.ViewModels.Admin
             {
                 var newUser = dialog.User;
 
-                // 🔍 Проверка на уникальность логина (без учёта регистра)
                 bool usernameExists = await _context.Users
                     .AnyAsync(u => u.Username.ToLower() == newUser.Username.ToLower());
 

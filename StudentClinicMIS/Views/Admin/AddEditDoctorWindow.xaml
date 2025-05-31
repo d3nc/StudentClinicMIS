@@ -8,41 +8,42 @@
         Title="Добавить/Редактировать врача"
         Height="400" Width="500"
         WindowStartupLocation="CenterScreen">
-	<Grid Margin="20">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
 
-		<StackPanel VerticalAlignment="Top" Margin="0,0,0,16">
-			<TextBox Margin="0,0,0,12"
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel VerticalAlignment="Top" Margin="0,0,0,16">
+            <TextBox Margin="0,0,0,12"
                      Text="{Binding Doctor.FullName, UpdateSourceTrigger=PropertyChanged}"
                      materialDesign:HintAssist.Hint="ФИО"/>
 
-			<ComboBox Margin="0,0,0,12"
+            <ComboBox Margin="0,0,0,12"
                       ItemsSource="{Binding Specializations}"
                       SelectedItem="{Binding Doctor.Specialization}"
                       DisplayMemberPath="Name"
                       materialDesign:HintAssist.Hint="Специализация"/>
 
-			<TextBox Margin="0,0,0,12"
+            <TextBox Margin="0,0,0,12"
                      Text="{Binding Doctor.Qualification, UpdateSourceTrigger=PropertyChanged}"
                      materialDesign:HintAssist.Hint="Квалификация"/>
 
-			<TextBox Margin="0,0,0,12"
+            <TextBox Margin="0,0,0,12"
                      Text="{Binding Doctor.LicenseNumber, UpdateSourceTrigger=PropertyChanged}"
                      materialDesign:HintAssist.Hint="Номер лицензии"/>
 
-			<ComboBox Margin="0,0,0,12"
+            <ComboBox Margin="0,0,0,12"
                       ItemsSource="{Binding Departments}"
-                      SelectedItem="{Binding Doctor.Department}"
+                      SelectedItem="{Binding Doctor.Employee.Department}"
                       DisplayMemberPath="Name"
                       materialDesign:HintAssist.Hint="Отделение"/>
-		</StackPanel>
+        </StackPanel>
 
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
-			<Button Content="Сохранить" Width="100" IsDefault="True" Click="SaveButton_Click" Margin="0,0,10,0"/>
-			<Button Content="Отмена" Width="100" IsCancel="True"/>
-		</StackPanel>
-	</Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
+            <Button Content="Сохранить" Width="100" IsDefault="True" Click="SaveButton_Click" Margin="0,0,10,0"/>
+            <Button Content="Отмена" Width="100" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
 </Window>

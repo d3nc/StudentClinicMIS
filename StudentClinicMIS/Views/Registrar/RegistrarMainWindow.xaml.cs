@@ -17,7 +17,7 @@ namespace StudentClinicMIS.Views.Registrar
         private readonly IPatientRepository _patientRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IFacultyRepository _facultyRepository;
-        private readonly IGroupRepository _groupRepository; // Добавлено поле
+        private readonly IGroupRepository _groupRepository;
         private readonly ObservableCollection<Patient> _patients = new();
         private List<Patient> _allPatients = new();
 
@@ -27,13 +27,13 @@ namespace StudentClinicMIS.Views.Registrar
             IPatientRepository patientRepository,
             IAppointmentRepository appointmentRepository,
             IFacultyRepository facultyRepository,
-            IGroupRepository groupRepository) // Добавлен параметр
+            IGroupRepository groupRepository)
         {
             InitializeComponent();
             _patientRepository = patientRepository;
             _appointmentRepository = appointmentRepository;
             _facultyRepository = facultyRepository;
-            _groupRepository = groupRepository; // Инициализация поля
+            _groupRepository = groupRepository;
             PatientsDataGrid.ItemsSource = _patients;
             Loaded += async (_, _) => await LoadPatientsAsync();
             PatientsDataGrid.MouseDoubleClick += PatientsDataGrid_MouseDoubleClick;
@@ -47,7 +47,7 @@ namespace StudentClinicMIS.Views.Registrar
                 var addWindow = new AddPatientWindow(
                     _patientRepository,
                     _facultyRepository,
-                    _groupRepository, // Используем поле класса
+                    _groupRepository,
                     GenderComboBox.ItemsSource as IEnumerable<Gender>,
                     null);
 
@@ -142,9 +142,9 @@ namespace StudentClinicMIS.Views.Registrar
                     var editWindow = new EditPatientWindow(
                         selectedPatient,
                         _patientRepository,
-                        _facultyRepository,  // Добавлен факультет репозиторий
-                        _groupRepository,    // Добавлен групповой репозиторий
-                        GenderComboBox.ItemsSource as IEnumerable<Gender>  // Добавлен список полов
+                        _facultyRepository,
+                        _groupRepository,
+                        GenderComboBox.ItemsSource as IEnumerable<Gender>
                     );
 
                     if (editWindow.ShowDialog() == true)

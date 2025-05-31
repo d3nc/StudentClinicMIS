@@ -40,7 +40,7 @@ namespace StudentClinicMIS
                     services.AddDbContext<PolyclinicContext>(options =>
                         options.UseNpgsql(connectionString));
 
-                    // Репозитории и сервисы
+
                     services.AddScoped<IPatientRepository, PatientRepository>();
                     services.AddScoped<IAppointmentRepository, AppointmentRepository>();
                     services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
@@ -50,18 +50,20 @@ namespace StudentClinicMIS
                     services.AddScoped<AvailableDoctorsPanelViewModel>();
                     services.AddScoped<IEmployeeRepository, EmployeeRepository>();
                     services.AddScoped<ISpecializationRepository, SpecializationRepository>();
-                    // Окна с внедрением зависимостей
+
                     services.AddTransient<AdminMainWindow>();
+                    services.AddTransient<SchedulePageViewModel>();
+                    services.AddTransient<SchedulePage>();
                     services.AddTransient<UsersPageViewModel>();
                     services.AddTransient<LoginWindow>();
                     services.AddScoped<IFacultyRepository, FacultyRepository>();
                     services.AddTransient<RegistrarMainWindow>();
                     services.AddTransient<DoctorMainWindow>();
                     services.AddTransient<RegistrarMainWindow>();
-                    services.AddScoped<DoctorMainViewModel>();
                     services.AddScoped<IGroupRepository, GroupRepository>();
                     services.AddTransient<DoctorsPageViewModel>();
                     services.AddTransient<AddEditDoctorViewModel>();
+                    services.AddScoped<ISchedulePageViewModelFactory, SchedulePageViewModelFactory>();
 
                 })
                 .Build();
@@ -73,7 +75,7 @@ namespace StudentClinicMIS
             {
                 await AppHost.StartAsync();
 
-                // Создаем LoginWindow через DI-контейнер
+
                 var loginWindow = AppHost.Services.GetRequiredService<LoginWindow>();
                 loginWindow.Show();
 

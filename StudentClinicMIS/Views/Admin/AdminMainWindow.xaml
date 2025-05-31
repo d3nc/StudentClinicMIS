@@ -1,42 +1,121 @@
 <Window x:Class="StudentClinicMIS.Views.Admin.AdminMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Администратор"
-        Height="720"
-        Width="1200">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Медицинская система - Администратор"
+        Height="700" Width="1200"
+        MinHeight="600" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="White"
+        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow">
 
-        <!-- Навигация -->
-        <Border Grid.Column="0"
-                Background="#3F3D56"
-                Padding="16">
-            <StackPanel>
-                <TextBlock Text="Медицинская система"
-                           Foreground="White"
-                           FontSize="20"
-                           FontWeight="Bold"
-                           Margin="0 0 0 24"/>
-                <!-- Кнопки навигации -->
-                <Button Style="{StaticResource MaterialDesignFlatButton}"
-                        Foreground="White"
-                        Content="Пользователи"
-                        Margin="0 4"
-                        Click="UsersButton_Click"/>
-                <Button Style="{StaticResource MaterialDesignFlatButton}"
-                        Foreground="White"
-                        Content="Врачи"
-                        Margin="0 4"
-                        Click="DoctorsButton_Click"/>
-            </StackPanel>
+    <Window.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12 8"/>
+            <Setter Property="Margin" Value="0 4"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="WindowControlButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#5E35B1" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Медицинская система - Администратор" 
+                         VerticalAlignment="Center" 
+                         Margin="16,0" 
+                         FontSize="14" 
+                         Foreground="White"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                    <Button x:Name="MinimizeButton" 
+                          Style="{StaticResource WindowControlButton}"
+                          Click="MinimizeButton_Click">
+                        <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14"/>
+                    </Button>
+                    <Button x:Name="MaximizeButton" 
+                          Style="{StaticResource WindowControlButton}"
+                          Click="MaximizeButton_Click">
+                        <materialDesign:PackIcon x:Name="MaximizeIcon" Kind="WindowRestore" Width="14" Height="14"/>
+                    </Button>
+                    <Button x:Name="CloseButton" 
+                          Style="{StaticResource WindowControlButton}"
+                          Click="CloseButton_Click">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- Контент -->
-        <ContentControl x:Name="MainContent"
-                        Grid.Column="1"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="#7E57C2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="8">
+                        <TextBlock Text="Меню" 
+                                 Foreground="White" 
+                                 FontSize="16" 
+                                 FontWeight="SemiBold"
+                                 Margin="0 0 0 8"/>
+
+                        <Button x:Name="UsersButton" 
+                              Style="{StaticResource MenuButtonStyle}" 
+                              Click="UsersButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountGroup" Foreground="White" Margin="0 0 8 0"/>
+                                <TextBlock Text="Пользователи"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="DoctorsButton"
+                              Style="{StaticResource MenuButtonStyle}" 
+                              Click="DoctorsButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Doctor" Foreground="White" Margin="0 0 8 0"/>
+                                <TextBlock Text="Врачи"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="LogoutButton"
+                              Style="{StaticResource MenuButtonStyle}" 
+                              Click="LogoutButton_Click"
+                              Margin="0,20,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Logout" Foreground="White" Margin="0 0 8 0"/>
+                                <TextBlock Text="Выход"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+            
+            <Border Grid.Column="1" Background="#FAFAFA">
+                <ContentControl x:Name="MainContent"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

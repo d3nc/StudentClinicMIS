@@ -19,12 +19,26 @@ namespace StudentClinicMIS.Data.Repositories
 
         public async Task AddAsync(Doctor doctor)
         {
+            if (doctor.Employee != null && doctor.Employee.EmployeeId == 0)
+            {
+                await _context.Employees.AddAsync(doctor.Employee);
+                await _context.SaveChangesAsync();
+            }
+
+            if (doctor.Employee != null)
+                doctor.EmployeeId = doctor.Employee.EmployeeId;
+
             await _context.Doctors.AddAsync(doctor);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Doctor doctor)
         {
+            if (doctor.Employee != null)
+            {
+                _context.Employees.Update(doctor.Employee);
+            }
+
             _context.Doctors.Update(doctor);
             await _context.SaveChangesAsync();
         }
@@ -70,7 +84,7 @@ namespace StudentClinicMIS.Data.Repositories
                 .Include(ds => ds.Doctor)
                 .Include(ds => ds.Room)
                 .FirstOrDefaultAsync(ds => ds.DoctorId == doctorId &&
-                                       ds.DayOfWeek == dayOfWeek.ToString());
+                                           ds.DayOfWeek == dayOfWeek.ToString());
         }
     }
 }

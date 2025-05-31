@@ -18,11 +18,32 @@ namespace StudentClinicMIS.Views.Admin
             Specializations = specializations;
             Departments = departments;
 
+            if (Doctor.Employee == null)
+                Doctor.Employee = new Employee();
+
             DataContext = this;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Doctor.FullName))
+            {
+                MessageBox.Show("Введите ФИО врача.", "Проверка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (Doctor.Specialization == null)
+            {
+                MessageBox.Show("Выберите специальность.", "Проверка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (Doctor.Employee?.DepartmentId == null || Doctor.Employee.DepartmentId == 0)
+            {
+                MessageBox.Show("Выберите отделение.", "Проверка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             DialogResult = true;
             Close();
         }

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore; // Для ToListAsync()
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using StudentClinicMIS.Data.Interfaces;
@@ -6,7 +6,6 @@ using StudentClinicMIS.Models;
 
 namespace StudentClinicMIS.Data.Repositories
 {
-    // FacultyRepository.cs
     public class FacultyRepository : IFacultyRepository
     {
         private readonly PolyclinicContext _context;

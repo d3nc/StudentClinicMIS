@@ -16,7 +16,6 @@ namespace StudentClinicMIS.Extensions
             );
         }
 
-        // Дополнительные методы при необходимости
         public static DateOnly ToDateOnly(this DateTime dateTime)
         {
             return DateOnly.FromDateTime(dateTime);

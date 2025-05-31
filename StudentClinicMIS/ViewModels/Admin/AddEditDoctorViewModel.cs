@@ -8,8 +8,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-
-// Псевдоним для решения конфликта имен
 using DoctorEntity = StudentClinicMIS.Models.Doctor;
 
 namespace StudentClinicMIS.ViewModels.Admin

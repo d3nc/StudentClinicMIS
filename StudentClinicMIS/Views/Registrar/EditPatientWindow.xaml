@@ -24,7 +24,6 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Заголовок -->
             <Border Grid.Row="0" Margin="0,0,0,20" MouseDown="Window_MouseDown">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="AccountEdit" Width="32" Height="32"
@@ -34,7 +33,6 @@
                 </StackPanel>
             </Border>
 
-            <!-- Поля формы -->
             <StackPanel Grid.Row="1" Margin="0,10,0,20">
                 <TextBox x:Name="LastNameBox" Margin="0,0,0,15"
                          materialDesign:HintAssist.Hint="Фамилия*"
@@ -92,7 +90,6 @@
                             SelectedDateFormat="Short"/>
             </StackPanel>
 
-            <!-- Кнопки -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="CancelButton" Content="Отмена" Width="150" Height="45"
                         FontSize="18" Margin="0,0,15,0"

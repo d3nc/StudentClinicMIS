@@ -57,21 +57,31 @@ namespace StudentClinicMIS.Views
                 await _context.SaveChangesAsync();
 
                 Window mainWindow = null;
-                try
+
+                if (user.Role?.ToLower() == "doctor")
+                {
+                    var employee = await _context.Employees
+                        .Include(e => e.Doctors)
+                        .FirstOrDefaultAsync(e => e.UserId == user.UserId);
+
+                    if (employee == null || employee.Doctors.Count == 0)
+                    {
+                        MessageBox.Show("Пользователь не связан с врачом.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _isProcessingLogin = false;
+                        return;
+                    }
+
+                    var doctorId = employee.Doctors.First().DoctorId;
+                    mainWindow = new DoctorMainWindow(doctorId);
+                }
+                else
                 {
                     mainWindow = user.Role?.ToLower() switch
                     {
                         "admin" => App.AppHost.Services.GetService<AdminMainWindow>(),
-                        "doctor" => App.AppHost.Services.GetService<DoctorMainWindow>(),
                         "receptionist" => App.AppHost.Services.GetService<RegistrarMainWindow>(),
                         _ => null
                     };
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при создании окна: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                    _isProcessingLogin = false;
-                    return;
                 }
 
                 if (mainWindow == null)
@@ -81,8 +91,8 @@ namespace StudentClinicMIS.Views
                     return;
                 }
 
-                this.Hide(); // Сначала скрываем окно входа
-                mainWindow.Closed += (s, args) => this.Close(); // Закрываем окно входа при закрытии основного окна
+                this.Hide();
+                mainWindow.Closed += (s, args) => this.Close();
                 mainWindow.Show();
             }
             catch (Exception ex)

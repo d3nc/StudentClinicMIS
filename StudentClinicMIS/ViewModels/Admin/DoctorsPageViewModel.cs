@@ -23,12 +23,13 @@ namespace StudentClinicMIS.ViewModels.Admin
         private string _searchText;
         private Specialization _selectedSpecialization;
         private Department _selectedDepartment;
-        private Models.Doctor _selectedDoctor; // Явное указание пространства имен
+        private Models.Doctor _selectedDoctor;
+        private bool _isLoading;
 
-        public ObservableCollection<Models.Doctor> AllDoctors { get; private set; }
-        public ObservableCollection<Models.Doctor> FilteredDoctors { get; private set; }
-        public ObservableCollection<Specialization> Specializations { get; private set; }
-        public ObservableCollection<Department> Departments { get; private set; }
+        public ObservableCollection<Models.Doctor> AllDoctors { get; private set; } = new();
+        public ObservableCollection<Models.Doctor> FilteredDoctors { get; private set; } = new();
+        public ObservableCollection<Specialization> Specializations { get; private set; } = new();
+        public ObservableCollection<Department> Departments { get; private set; } = new();
 
         public string SearchText
         {
@@ -91,54 +92,49 @@ namespace StudentClinicMIS.ViewModels.Admin
             _specializationRepository = specializationRepository;
             _departmentRepository = departmentRepository;
 
-            AllDoctors = new ObservableCollection<Models.Doctor>();
-            FilteredDoctors = new ObservableCollection<Models.Doctor>();
-            Specializations = new ObservableCollection<Specialization>();
-            Departments = new ObservableCollection<Department>();
-
-            LoadDataAsync();
-
             ClearFiltersCommand = new RelayCommand(ClearFilters);
-            AddDoctorCommand = new RelayCommand(AddDoctor);
+            AddDoctorCommand = new RelayCommand(async () => await AddDoctorAsync());
             EditDoctorCommand = new RelayCommand(EditDoctor, () => SelectedDoctor != null);
-            DeleteDoctorCommand = new RelayCommand(DeleteDoctor, () => SelectedDoctor != null);
+            DeleteDoctorCommand = new RelayCommand(async () => await DeleteDoctorAsync(), () => SelectedDoctor != null);
+
+            _ = LoadDataAsync();
         }
 
-        private async void LoadDataAsync()
+        private async Task LoadDataAsync()
         {
+            if (_isLoading) return;
+            _isLoading = true;
+
             try
             {
                 var doctors = await _doctorRepository.GetAllAsync();
                 var specializations = await _specializationRepository.GetAllAsync();
                 var departments = await _departmentRepository.GetAllAsync();
 
-                await Application.Current.Dispatcher.InvokeAsync(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     AllDoctors.Clear();
                     foreach (var doctor in doctors)
-                    {
                         AllDoctors.Add(doctor);
-                    }
 
                     Specializations.Clear();
                     foreach (var spec in specializations)
-                    {
                         Specializations.Add(spec);
-                    }
 
                     Departments.Clear();
                     foreach (var dept in departments)
-                    {
                         Departments.Add(dept);
-                    }
 
                     ApplyFilters();
                 });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _isLoading = false;
             }
         }
 
@@ -151,7 +147,7 @@ namespace StudentClinicMIS.ViewModels.Admin
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 query = query.Where(d =>
-                    d.FullName.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                    d.FullName?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true);
             }
 
             if (SelectedSpecialization != null)
@@ -179,7 +175,7 @@ namespace StudentClinicMIS.ViewModels.Admin
             SelectedDepartment = null;
         }
 
-        private void AddDoctor()
+        private async Task AddDoctorAsync()
         {
             var newDoctor = new Models.Doctor
             {
@@ -190,8 +186,16 @@ namespace StudentClinicMIS.ViewModels.Admin
             var window = new AddEditDoctorWindow(newDoctor, Specializations, Departments);
             if (window.ShowDialog() == true)
             {
-                AllDoctors.Add(newDoctor);
-                ApplyFilters();
+                try
+                {
+                    await _doctorRepository.AddAsync(newDoctor);
+                    AllDoctors.Add(newDoctor);
+                    ApplyFilters();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при добавлении: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -206,7 +210,7 @@ namespace StudentClinicMIS.ViewModels.Admin
             }
         }
 
-        private async void DeleteDoctor()
+        private async Task DeleteDoctorAsync()
         {
             if (SelectedDoctor == null) return;
 
@@ -226,8 +230,7 @@ namespace StudentClinicMIS.ViewModels.Admin
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при удалении: {ex.Message}", "Ошибка",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Ошибка при удалении: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

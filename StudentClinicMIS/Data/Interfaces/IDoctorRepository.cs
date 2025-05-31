@@ -7,7 +7,7 @@ namespace StudentClinicMIS.Data.Interfaces
     public interface IDoctorRepository
     {
         Task<List<Doctor>> GetByDepartmentIdAsync(int departmentId);
-        Task<DoctorScheduleEntity> GetScheduleForDoctorAsync(int doctorId, DayOfWeek dayOfWeek); // Изменено на DoctorScheduleEntity
+        Task<DoctorScheduleEntity> GetScheduleForDoctorAsync(int doctorId, DayOfWeek dayOfWeek);
         Task AddAsync(Doctor doctor);
         Task UpdateAsync(Doctor doctor);
         Task DeleteAsync(int id);

@@ -16,7 +16,6 @@
 		<converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
 		<converters:InverseIntToVisibilityConverter x:Key="InverseIntToVisibilityConverter" />
 
-		<!-- Основной стиль для DatePicker -->
 		<Style x:Key="AppointmentCalendarStyle" TargetType="Calendar">
 			<Setter Property="CalendarDayButtonStyle">
 				<Setter.Value>
@@ -38,7 +37,6 @@
 			</Setter>
 		</Style>
 
-		<!-- Шаблон для списка временных слотов -->
 		<DataTemplate x:Key="SlotTemplate">
 			<TextBlock Text="{Binding Display}"
                        Foreground="{Binding IsOccupied, Converter={StaticResource BooleanToBrushConverter}}"
@@ -56,7 +54,6 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<!-- Отделение -->
 		<ComboBox x:Name="DepartmentComboBox"
                   materialDesign:HintAssist.Hint="Отделение"
                   DisplayMemberPath="Name"
@@ -65,7 +62,6 @@
                   SelectionChanged="DepartmentComboBox_SelectionChanged"
                   Margin="0,0,0,16"/>
 
-		<!-- Врач -->
 		<ComboBox x:Name="DoctorComboBox"
                   Grid.Row="1"
                   materialDesign:HintAssist.Hint="Врач"
@@ -75,7 +71,6 @@
                   SelectionChanged="DoctorComboBox_SelectionChanged"
                   Margin="0,0,0,16"/>
 
-		<!-- Дата -->
 		<DatePicker x:Name="DatePicker"
                     Grid.Row="2"
                     materialDesign:HintAssist.Hint="Дата приёма"
@@ -84,7 +79,6 @@
                     CalendarStyle="{StaticResource AppointmentCalendarStyle}"
                     Margin="0,0,0,16"/>
 
-		<!-- Заглушка если нет слотов -->
 		<TextBlock Text="Выберите врача и дату для отображения доступных слотов"
                    Grid.Row="3"
                    HorizontalAlignment="Center"
@@ -94,7 +88,6 @@
                    Margin="0,10"
                    Visibility="{Binding ElementName=TimeSlotsListBox, Path=Items.Count, Converter={StaticResource InverseIntToVisibilityConverter}}"/>
 
-		<!-- Временные слоты -->
 		<ListBox x:Name="TimeSlotsListBox"
                  Grid.Row="3"
                  MaxHeight="250"
@@ -104,7 +97,6 @@
                  Margin="0,0,0,16"
                  Visibility="{Binding ElementName=TimeSlotsListBox, Path=Items.Count, Converter={StaticResource IntToVisibilityConverter}}"/>
 
-		<!-- Кнопка -->
 		<Button Grid.Row="4"
                 Content="Записать"
                 Click="SaveButton_Click"

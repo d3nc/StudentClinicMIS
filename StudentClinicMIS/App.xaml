@@ -5,14 +5,17 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Темная/светлая тема и цветовая схема -->
                 <materialDesign:BundledTheme BaseTheme="Light"
                                              PrimaryColor="DeepPurple"
-                                             SecondaryColor="Lime" />
+                                             SecondaryColor="Teal" />
 
-                <!-- Обязательные стили для MaterialDesign v5 -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="TextElement">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

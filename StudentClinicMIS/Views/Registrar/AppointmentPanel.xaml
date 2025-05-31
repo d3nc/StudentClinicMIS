@@ -18,7 +18,6 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
                 <materialDesign:PackIcon Kind="CalendarPlus" 
                                         Width="32" 
@@ -32,7 +31,6 @@
                            Foreground="{DynamicResource MaterialDesignBody}"/>
             </StackPanel>
 
-            <!-- Appointment Parameters -->
             <GroupBox Grid.Row="1" 
                       Header="Параметры записи" 
                       Margin="0,0,0,16"
@@ -73,7 +71,6 @@
                 </Grid>
             </GroupBox>
 
-            <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Сохранить запись"
                         Width="180"
@@ -84,7 +81,6 @@
                         Click="SaveAppointment_Click"/>
             </StackPanel>
 
-            <!-- Notification -->
             <materialDesign:Snackbar x:Name="NotificationSnackbar"
                                    Grid.Row="2"
                                    HorizontalAlignment="Right"

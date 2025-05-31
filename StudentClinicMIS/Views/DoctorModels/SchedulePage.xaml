@@ -1,0 +1,69 @@
+<Page x:Class="StudentClinicMIS.Views.DoctorModels.SchedulePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Title="SchedulePage">
+
+    <Grid Margin="16">
+        <StackPanel>
+            <TextBlock Text="Расписание врача"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0 0 0 16"/>
+
+            <!-- Фильтры -->
+            <StackPanel Orientation="Horizontal"
+                        Margin="0 0 0 16"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                <DatePicker Width="180"
+                            SelectedDate="{Binding SelectedDate}"
+                            Margin="0,0,12,0"/>
+                <ComboBox Width="180"
+                          ItemsSource="{Binding StatusOptions}"
+                          SelectedItem="{Binding SelectedStatus}"
+                          Margin="0,0,12,0"/>
+                <Button Content="Фильтровать"
+                        Command="{Binding FilterCommand}" />
+            </StackPanel>
+
+            <!-- Список приёмов -->
+            <DataGrid ItemsSource="{Binding FilteredAppointments}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      Height="400"
+                      Margin="0 0 0 16">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Дата"
+                                        Binding="{Binding AppointmentDate}"/>
+                    <DataGridTextColumn Header="Время"
+                                        Binding="{Binding StartTime}"/>
+                    <DataGridTextColumn Header="Пациент"
+                                        Binding="{Binding Patient.FullName}"/>
+                    <DataGridTextColumn Header="Статус"
+                                        Binding="{Binding Status}"/>
+                    <DataGridTextColumn Header="Цель"
+                                        Binding="{Binding Purpose}"/>
+                    <DataGridTemplateColumn Header="Действия">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Принят"
+                                            Margin="0,0,6,0"
+                                            Command="{Binding DataContext.MarkAsCompletedCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Content="Не пришёл"
+                                            Command="{Binding DataContext.MarkAsNoShowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+</Page>

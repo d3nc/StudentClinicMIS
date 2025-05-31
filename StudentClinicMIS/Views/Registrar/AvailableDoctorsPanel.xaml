@@ -20,7 +20,6 @@
             Effect="{StaticResource MaterialDesignShadowDepth1}">
         <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch">
 
-            <!-- Header -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
                 <materialDesign:PackIcon Kind="Doctor" Width="32" Height="32"
                                          Foreground="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,12,0"/>
@@ -31,7 +30,6 @@
                            Foreground="{DynamicResource MaterialDesignBody}" />
             </StackPanel>
 
-            <!-- Patient -->
             <Border Margin="0,0,0,16"
                     Background="{DynamicResource MaterialDesignCardBackground}"
                     CornerRadius="4"
@@ -47,7 +45,6 @@
                 </StackPanel>
             </Border>
 
-            <!-- Filters -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
                 <ComboBox x:Name="DepartmentComboBox"
                           DisplayMemberPath="Name"
@@ -80,7 +77,6 @@
 
             </StackPanel>
 
-            <!-- Slots -->
             <GroupBox Header="Свободные слоты"
                       FontWeight="Bold"
                       Padding="8"
@@ -112,7 +108,6 @@
                 </ListBox>
             </GroupBox>
 
-            <!-- Save -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Сохранить запись"
                         Width="180"
@@ -123,7 +118,6 @@
                         materialDesign:ButtonAssist.CornerRadius="2"
                         Click="SaveButton_Click"/>
             </StackPanel>
-
         </StackPanel>
     </Border>
 </UserControl>

@@ -169,7 +169,6 @@ namespace StudentClinicMIS.Views
             if (BirthDatePicker.SelectedDate.HasValue)
                 _patient.BirthDate = DateOnly.FromDateTime(BirthDatePicker.SelectedDate.Value);
 
-            // Обновляем группу
             if (GroupComboBox.SelectedValue is int groupId)
             {
                 _patient.StudentCard ??= new StudentCard();
